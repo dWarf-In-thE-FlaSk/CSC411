@@ -10,6 +10,6 @@ package ServerClient;
  */
 public interface UDPClient {
     
-    
+    // We need some code here
     
 }

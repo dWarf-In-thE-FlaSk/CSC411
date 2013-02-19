@@ -10,8 +10,7 @@ package ServerClient;
  */
 public interface Facility {
     
-    public String name;
-    
+    ajhdbjhadb
     
     
 }

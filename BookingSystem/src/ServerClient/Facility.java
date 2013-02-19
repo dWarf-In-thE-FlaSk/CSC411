@@ -10,7 +10,7 @@ package ServerClient;
  */
 public interface Facility {
     
-    ajhdbjhadb
+    ajhdbjhadb;
     
     
 }

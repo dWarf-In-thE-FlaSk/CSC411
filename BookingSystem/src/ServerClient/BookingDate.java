@@ -18,14 +18,15 @@ public class BookingDate {
         
     
     public void setDate(BookingDate pDate) {
-        this.aDate = pDate.getDateString();
+        this.aDate = pDate.getDate();
     }
     
-    public String getDateString() {
+    public String getDate() {
         return aDate;
     }
     
-    public BookingDate getDate() throws CloneNotSupportedException {
+    @Override
+    public BookingDate clone() throws CloneNotSupportedException {
         return (BookingDate)this.clone();
     }
     

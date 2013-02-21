@@ -46,16 +46,43 @@ public class BookingDate {
         
         return new Integer(result[2]);
     }
-     
-    public boolean isBefore() {
-        //code here
+    
+    public boolean isBefore(BookingDate pDate) {
+        boolean result;
         
-        return true;
+        if (this.getDay().ordinal() < pDate.getDay().ordinal()) {
+            result = true;
+        }
+        else if (this.getDay().ordinal() > pDate.getDay().ordinal()) {
+            result = false;
+        }
+        else {
+            if (this.getHour() < pDate.getHour()) {
+                result = true;
+            }
+            else if (this.getHour() > pDate.getHour()) {
+                result = false;
+            }
+            else {
+                if (this.getMinute() < pDate.getMinute()) {
+                    result = true;
+                }
+                
+                else {
+                    result = false;
+                }    
+            }
+        }
+        
+        return result;
     }
     
-    public boolean isAfter() {
-        //code here
-        
-        return true;
+    public boolean isAfter(BookingDate pDate) {
+               
+        return !isBefore(pDate);
+    }
+    
+    public boolean isOverlap(BookingDate pDate) {
+        return !(this.isBefore(pDate)||this.isAfter(pDate));
     }
 }

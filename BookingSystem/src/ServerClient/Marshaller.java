@@ -6,19 +6,16 @@ package ServerClient;
  *
  */
 public class Marshaller {
-    public static String unMarshall(byte[] data) {
+
+    public static byte[] marshallResponse(String message, String requestID) {
         // Placeholder function
         return null;
     }
-    public static byte[] marshallMessage(String message) {
+    public static String unmarshallMessage(byte[] data) {
         // Placeholder function
         return null;
     }
-    public static String getMessage(byte[] data) {
-        // Placeholder function
-        return null;
-    }
-    public static String getRequestID(byte[] data) {
+    public static String unmarshallRequestID(byte[] data) {
         // Placeholder function
         return null;
     }

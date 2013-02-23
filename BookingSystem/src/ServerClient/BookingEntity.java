@@ -12,7 +12,7 @@ public class BookingEntity {
     private Facility aFacility;
     private BookingDate aStartDate;
     private BookingDate aEndDate;
-    int aConformationID;
+    String aConformationID;
     
     public void setFacility(Facility pFacility) {
         aFacility = pFacility;
@@ -38,11 +38,11 @@ public class BookingEntity {
         return aEndDate.clone();
     }
     
-    public void setConformationID(int pConformationID) {
+    public void setConformationID(String pConformationID) {
         aConformationID = pConformationID;
     }
     
-    public int getConformationID() {
+    public String getConformationID() {
         return aConformationID;
     }
 

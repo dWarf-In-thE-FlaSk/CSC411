@@ -80,7 +80,7 @@ public class BookingDate {
     
     public boolean isAfter(BookingDate pDate) {
                
-        return !isBefore(pDate);
+        return pDate.isBefore(this);
     }
     
     public boolean isOverlap(BookingDate pDate) {

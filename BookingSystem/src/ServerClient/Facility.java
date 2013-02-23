@@ -12,7 +12,9 @@ package ServerClient;
 public class Facility {
     private String aName;
 
-    //Adding new classes made during meeting and the updated UML
+    public Facility(String pName) {
+        aName = pName;
+    }
     
     @Override
     public Facility clone() throws CloneNotSupportedException {  

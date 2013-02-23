@@ -11,6 +11,15 @@ package ServerClient;
 public class BookingDate {
     private String aDate;
     
+    public BookingDate(BookingDate pDate) {
+        this.aDate = pDate.getDate();
+    }
+    
+    public BookingDate(Day pDay, int pHour, int pMinute) {
+        this.aDate = pDay.toString() + new Integer(pHour).toString() 
+                + new Integer(pMinute).toString();
+    }
+    
     public void setDate(Day pDay, int pHour, int pMinute) {
         this.aDate = pDay.toString() + new Integer(pHour).toString() 
                 + new Integer(pMinute).toString();

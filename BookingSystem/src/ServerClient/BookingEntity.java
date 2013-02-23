@@ -14,6 +14,13 @@ public class BookingEntity {
     private BookingDate aEndDate;
     String aConformationID;
     
+    public BookingEntity(Facility pFaci, BookingDate pStart, BookingDate pEnd, String pID) {
+        aFacility = pFaci;
+        aStartDate = pStart;
+        aEndDate = pEnd;
+        aConformationID = pID;
+    }
+    
     public void setFacility(Facility pFacility) {
         aFacility = pFacility;
     }

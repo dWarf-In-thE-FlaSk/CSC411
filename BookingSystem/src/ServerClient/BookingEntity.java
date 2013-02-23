@@ -9,23 +9,23 @@ package ServerClient;
  * @author rikardandersson, Lance
  */
 public class BookingEntity {
-    private Facility aFacility;
+    private String aFacility;
     private BookingDate aStartDate;
     private BookingDate aEndDate;
     private String aConformationID;
     
-    public BookingEntity(Facility pFaci, BookingDate pStart, BookingDate pEnd, String pID) {
+    public BookingEntity(String pFaci, BookingDate pStart, BookingDate pEnd, String pID) {
         aFacility = pFaci;
         aStartDate = pStart;
         aEndDate = pEnd;
         aConformationID = pID;
     }
     
-    public void setFacility(Facility pFacility) {
+    public void setFacility(String pFacility) {
         aFacility = pFacility;
     }
     
-    public Facility getFacility() {
+    public String getFacility() {
         return aFacility;
     }
     

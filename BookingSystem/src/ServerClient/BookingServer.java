@@ -32,7 +32,7 @@ public class BookingServer {
             dgSocket.receive(dgPacket);
             data = dgPacket.getData(); // This will be the array of bytes we need to unmarshal
             String receivedMessage = Marshaller.unMarshall(data);
-            String returnMessage = doSomethingWithMessage(receivedMessage, bookingData);
+            String returnMessage = doSomethingWithMessage(receivedMessage);
             data = Marshaller.marshall(returnMessage);
             dgPacket.setData(data);
             dgPacket.setAddress(dgPacket.getAddress());

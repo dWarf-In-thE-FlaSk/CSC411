@@ -11,6 +11,15 @@ package ServerClient;
 public class BookingDate {
     private String aDate;
     
+    public BookingDate(BookingDate pDate) {
+        this.aDate = pDate.getDate();
+    }
+    
+    public BookingDate(Day pDay, int pHour, int pMinute) {
+        this.aDate = pDay.toString() + new Integer(pHour).toString() 
+                + new Integer(pMinute).toString();
+    }
+    
     public void setDate(Day pDay, int pHour, int pMinute) {
         this.aDate = pDay.toString() + new Integer(pHour).toString() 
                 + new Integer(pMinute).toString();
@@ -83,7 +92,31 @@ public class BookingDate {
         return pDate.isBefore(this);
     }
     
-    public boolean isOverlap(BookingDate pDate) {
-        return !(this.isBefore(pDate)||this.isAfter(pDate));
+    public BookingDate increment(Day pDay, int pHour, int pMinute) {
+        Day lDay = this.getDay();
+        int lHour = this.getHour();
+        int lMinute = this.getMinute();
+        
+        int temp;
+        
+        temp = (lMinute + pMinute)/60;
+        
+        lMinute = (lMinute + pMinute)%60;
+        
+        lHour = lHour + pHour + temp;
+        
+        temp = lHour/24;
+        
+        lHour = lHour%24;
+        
+        temp = (lDay.ordinal() + temp)%7;
+        
+        for(Day tDay: Day.values()){
+            if(tDay.ordinal() == temp) {
+                lDay = tDay;
+            }                
+        }
+        
+        return new BookingDate(lDay, lHour, lMinute);
     }
 }

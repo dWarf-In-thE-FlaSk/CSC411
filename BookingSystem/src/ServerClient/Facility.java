@@ -9,10 +9,13 @@ package ServerClient;
  * @author Lance
  */
 
-public class Facility {
+public enum Facility {
+    /*
     private String aName;
 
-    //Adding new classes made during meeting and the updated UML
+    public Facility(String pName) {
+        aName = pName;
+    }
     
     @Override
     public Facility clone() throws CloneNotSupportedException {  
@@ -26,4 +29,7 @@ public class Facility {
     public String getName() {
         return aName;
     }
+    */
+    
+    LTA, LTB, LTC, LTD;
 }

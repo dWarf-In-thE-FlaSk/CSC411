@@ -6,20 +6,27 @@ package ServerClient;
 
 /**
  *
- * @author rikardandersson
+ * @author rikardandersson, Lance
  */
 public class BookingEntity {
     private Facility aFacility;
     private BookingDate aStartDate;
     private BookingDate aEndDate;
-    String aConformationID;
+    private String aConformationID;
+    
+    public BookingEntity(Facility pFaci, BookingDate pStart, BookingDate pEnd, String pID) {
+        aFacility = pFaci;
+        aStartDate = pStart;
+        aEndDate = pEnd;
+        aConformationID = pID;
+    }
     
     public void setFacility(Facility pFacility) {
         aFacility = pFacility;
     }
     
-    public Facility getFacility() throws CloneNotSupportedException {
-        return aFacility.clone();
+    public Facility getFacility() {
+        return aFacility;
     }
     
     public void setStartDate(BookingDate pStartDate) {
@@ -46,4 +53,12 @@ public class BookingEntity {
         return aConformationID;
     }
 
+    public boolean isOverlapping(BookingDate pStartDate, BookingDate pEndDate) {
+        if(aStartDate.isBefore(pEndDate) || aEndDate.isAfter(pStartDate)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

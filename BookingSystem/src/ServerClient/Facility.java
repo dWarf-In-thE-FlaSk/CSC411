@@ -9,7 +9,8 @@ package ServerClient;
  * @author Lance
  */
 
-public class Facility {
+public enum Facility {
+    /*
     private String aName;
 
     public Facility(String pName) {
@@ -28,4 +29,7 @@ public class Facility {
     public String getName() {
         return aName;
     }
+    */
+    
+    LTA, LTB, LTC, LTD;
 }

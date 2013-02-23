@@ -31,8 +31,8 @@ public class BookingServer {
         while(true) {
             dgSocket.receive(dgPacket); // Throws IOException
             data = dgPacket.getData(); // This will be the array of bytes we need to unmarshal
-            String receivedMessage = Marshaller.getMessage(data);
-            String requestID = Marshaller.getRequestID(data);
+            String receivedMessage = Marshaller.unmarshallMessage(data);
+            String requestID = Marshaller.unmarshallRequestID(data);
             
             // If this request has already been processed once, get the response and resend it.
             String returnMessage = serverLog.responsForRequest(receivedMessage);
@@ -44,7 +44,7 @@ public class BookingServer {
             }
             
             // Then return the response.
-            data = Marshaller.marshallMessage(returnMessage);
+            data = Marshaller.marshallResponse(returnMessage, requestID);
             dgPacket.setData(data);
             dgPacket.setAddress(dgPacket.getAddress());
             dgSocket.send(dgPacket); // Throws IOException

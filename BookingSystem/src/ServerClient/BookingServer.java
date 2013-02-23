@@ -29,11 +29,22 @@ public class BookingServer {
         DatagramPacket dgPacket = new DatagramPacket(data, data.length);
 
         while(true) {
-            dgSocket.receive(dgPacket);
+            dgSocket.receive(dgPacket); // Throws IOException
             data = dgPacket.getData(); // This will be the array of bytes we need to unmarshal
-            String receivedMessage = Marshaller.unMarshall(data);
-            String returnMessage = doSomethingWithMessage(receivedMessage);
-            data = Marshaller.marshall(returnMessage);
+            String receivedMessage = Marshaller.getMessage(data);
+            String requestID = Marshaller.getRequestID(data);
+            
+            // If this request has already been processed once, get the response and resend it.
+            String returnMessage = serverLog.responsForRequest(receivedMessage);
+            
+            // Else execute the operation and register the response.
+            if (returnMessage == null) {
+                returnMessage = doSomethingWithMessage(receivedMessage);
+                serverLog.registerRequest(requestID, returnMessage);
+            }
+            
+            // Then return the response.
+            data = Marshaller.marshallMessage(returnMessage);
             dgPacket.setData(data);
             dgPacket.setAddress(dgPacket.getAddress());
             dgSocket.send(dgPacket); // Throws IOException

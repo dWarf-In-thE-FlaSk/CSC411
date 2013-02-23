@@ -8,6 +8,10 @@ package ServerClient;
  *
  * @author rikardandersson
  */
-public class Bookings {
+public class BookingData {
+    private Facility[] aAllFacility = {};
+    
+    
+    
     
 }

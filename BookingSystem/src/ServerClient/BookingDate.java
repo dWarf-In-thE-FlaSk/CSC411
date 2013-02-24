@@ -10,6 +10,10 @@ package ServerClient;
  */
 public class BookingDate {
     private String aDate;
+
+    public BookingDate() {
+        super();
+    }
     
     public BookingDate(BookingDate pDate) {
         this.aDate = pDate.getDate();
@@ -92,7 +96,7 @@ public class BookingDate {
         return pDate.isBefore(this);
     }
     
-    public BookingDate increment(Day pDay, int pHour, int pMinute) {
+    public BookingDate increment(int pDay, int pHour, int pMinute) {
         Day lDay = this.getDay();
         int lHour = this.getHour();
         int lMinute = this.getMinute();
@@ -109,7 +113,7 @@ public class BookingDate {
         
         lHour = lHour%24;
         
-        temp = (lDay.ordinal() + temp)%7;
+        temp = (lDay.ordinal() + temp + pDay)%7;
         
         for(Day tDay: Day.values()){
             if(tDay.ordinal() == temp) {
@@ -118,5 +122,10 @@ public class BookingDate {
         }
         
         return new BookingDate(lDay, lHour, lMinute);
+    }
+    
+    public BookingDate decrement(int pDay, int pHour, int pMinute) {
+        return increment(-pDay, -pHour, -pMinute);
+        
     }
 }

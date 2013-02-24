@@ -18,7 +18,7 @@ import java.util.HashMap;
  * @TODO - do we need to handle corrupted packets or splitting a message into 
  * several packets?
  */
-public class BookingServer {
+public class BookingServer implements Observer{
         
     public static void main(String args[]) throws Exception { // Specify later 
         // Create a socket for UPD-port 8008
@@ -58,6 +58,40 @@ public class BookingServer {
             default: return "Invalid command";
         }
                 
+    }
+
+    @Override
+    /**
+     * @param action = index of action type
+     * @param msg = message passed to server
+     */
+    public void handleEvent(String action, String msg) {
+        
+        //I do not use switch for only JRE 1.7 supports String
+        if (action.equals("wrongName")) {
+            
+        }
+        
+        if (action.equals("overlap")) {
+            
+        }
+        
+        if (action.equals("register")) {
+            
+        }
+        
+        if (action.equals("update")) {
+            
+        }
+        
+        if (action.equals("wrongID")) {
+            
+        }
+        
+        if (action.equals("change")) {
+            
+        }
+        
     }
     
     

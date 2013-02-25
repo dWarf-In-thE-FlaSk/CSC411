@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The BookingServer is the gateway to the rest of the server functionality and
+ * acts as a controller for the rest of the fucntions.
  */
 package ServerClient;
 
@@ -15,8 +15,10 @@ import java.util.HashMap;
  * It will contain functions:
  * 
  * 
- * @TODO - do we need to handle corrupted packets or splitting a message into 
+ * @TODO: Do we need to handle corrupted packets or splitting a message into 
  * several packets?
+ * @TODO: When the marshalling and unmarshalling functions have been written, 
+ * make corresponding changes in this class.
  */
 public class BookingServer implements Observer{
         
@@ -51,7 +53,7 @@ public class BookingServer implements Observer{
         }
     }
     
-    // Placeholder class until we have some functions to call in bookingData
+    // Placeholder method until we have some functions to call in bookingData
     public static String doSomethingWithMessage(String message) {
         switch (1) {
             case 1: return "confirmationID";

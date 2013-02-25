@@ -35,12 +35,12 @@ public class BookingServer implements Observer{
             String requestID = Marshaller.unmarshallRequestID(data);
             
             // If this request has already been processed once, get the response and resend it.
-            String returnMessage = serverLog.responsForRequest(receivedMessage);
+            String returnMessage = serverLog.responsForRequest(requestID, dgPacket.getAddress());
             
             // Else execute the operation and register the response.
             if (returnMessage == null) {
                 returnMessage = doSomethingWithMessage(receivedMessage);
-                serverLog.registerRequest(requestID, returnMessage);
+                serverLog.registerRequest(dgPacket.getAddress(), requestID, returnMessage);
             }
             
             // Then return the response.

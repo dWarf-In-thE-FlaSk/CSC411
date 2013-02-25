@@ -12,7 +12,7 @@ import java.util.HashMap;
  * 
  * This class will contain the main method that runs and listens for calls
  * 
- * I will contain functions:
+ * It will contain functions:
  * 
  * 
  * @TODO - do we need to handle corrupted packets or splitting a message into 
@@ -35,12 +35,12 @@ public class BookingServer implements Observer{
             String requestID = Marshaller.unmarshallRequestID(data);
             
             // If this request has already been processed once, get the response and resend it.
-            String returnMessage = serverLog.responsForRequest(requestID, dgPacket.getAddress());
+            String returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
             
             // Else execute the operation and register the response.
             if (returnMessage == null) {
                 returnMessage = doSomethingWithMessage(receivedMessage);
-                serverLog.registerRequest(dgPacket.getAddress(), requestID, returnMessage);
+                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
             }
             
             // Then return the response.

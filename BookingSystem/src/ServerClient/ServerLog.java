@@ -7,7 +7,7 @@
  */
 package ServerClient;
 
-import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.util.HashMap;
 
 /**
@@ -28,7 +28,7 @@ import java.util.HashMap;
 public class ServerLog {
     // log will map request and responses against the address where it came from
     // and to where it was sent. For reference to RequestResponsePair se below.
-    private HashMap<InetAddress, RequestResponsePair> log;
+    private HashMap<SocketAddress, RequestResponsePair> log;
     
     /**
      * Public method to register a request and it's respons in the ServerLog.
@@ -37,10 +37,10 @@ public class ServerLog {
      * @param client The client the request comes from and the response goes to.
      * @param response The respons sent back to the client
      */
-    public void registerRequest(InetAddress client, String id, String response) {
+    public void registerRequest(SocketAddress client, String id, String response) {
         // If this is the first registration, initiate the log
         if (log == null) {
-            log = new HashMap<InetAddress, RequestResponsePair>();
+            log = new HashMap<SocketAddress, RequestResponsePair>();
         }
         // If there is a previous request registered it will be overwritten here
         // See reason for this is in class description.
@@ -54,7 +54,7 @@ public class ServerLog {
      * @param client The client the request came from.
      * @return boolean indicating if the request by a certain ID exists
      */
-    public boolean requestIsLoggedForClient(String id, InetAddress client) {
+    public boolean requestIsLoggedForClient(String id, SocketAddress client) {
         // If the log is not created or it doesn't contain the client key this
         // must be the first query about this client
         if (log == null || log.containsKey(client)) {
@@ -74,7 +74,7 @@ public class ServerLog {
      * @return String containing the respons or null if request isn't the latest
      * one logged (for any reason).
      */
-    public String responsForRequest(String id, InetAddress client) {
+    public String responsForRequest(String id, SocketAddress client) {
         if (log != null) {
             RequestResponsePair rrp = log.get(client);
             return (rrp.getRequestID().equals(id) ? rrp.getResponse() : null);

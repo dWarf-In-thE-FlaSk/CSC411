@@ -1,13 +1,28 @@
-/*
- * This class will store requests made and cache the results 
- * 
+/**
+ * ServerLog is a helping class for BookingServer keeping track of made requests
+ * and their responses. This will allow BookingServer to query the ServerLog 
+ * upon each request whether it's a new and unique one. This will help
+ * preventing duplicate requests from one client due to responses being lost on
+ * the way back from the server to the client. 
  */
 package ServerClient;
 
 import java.util.HashMap;
 
 /**
- *
+ * ServerLog is a helping class for BookingServer keeping track of made requests
+ * and their responses. This will allow BookingServer to query the ServerLog 
+ * upon each request whether it's a new and unique one. This will help
+ * preventing duplicate requests from one client due to responses being lost on
+ * the way back from the server to the client.
+ * 
+ * Since the client application is a fairly simple application running on single
+ * thread the ServerLog will only store the latest request/response from/to a
+ * specific IP address and port.
+ * 
+ * @TODO: Decided if we should only apply this technique to non-idempotent 
+ * operations.
+ * @TODO: Delete previous operations 
  */
 public class ServerLog {
     // log will contain the latest requests made

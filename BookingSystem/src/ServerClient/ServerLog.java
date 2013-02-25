@@ -144,6 +144,7 @@ public class ServerLog {
             }
             return hash;
         }
+        
         @Override
         public boolean equals(Object o) {
             if (o == null) {

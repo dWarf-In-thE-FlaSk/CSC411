@@ -15,11 +15,12 @@ import java.util.HashMap;
  * 
  * It will contain functions:
  * 
- * 
  * @TODO: Do we need to handle corrupted packets or splitting a message into 
  * several packets?
  * @TODO: When the marshalling and unmarshalling functions have been written, 
  * make corresponding changes in this class.
+ * 
+ * @author Rikard Andersson
  */
 public class BookingServer {
         
@@ -41,42 +42,50 @@ public class BookingServer {
         aList.add("LTC");
         aList.add("LTD");
         
-        bookingData.setFacilityList(aList);
-        
-        
+        bookingData.setFacilityList(aList); // Maybe we should just have a function in BookingData : addFacility(String name)
 
         while(true) {
             dgSocket.receive(dgPacket); // Throws IOException
-            data = dgPacket.getData(); // This will be the array of bytes we need to unmarshal
-            String receivedMessage = Marshaller.unmarshallMessage(data);
-            String requestID = Marshaller.unmarshallRequestID(data);
+            data = dgPacket.getData();
+            
+            // Unmarshalling methods. See static Marshaller methods for reference
+            ArrayList<String> receivedMessages = Marshaller.unmarshall(data);
+            
+            // The request ID of a message is the second element
+            String requestID = receivedMessages.get(1);
             
             // If this request has already been processed once, get the response and resend it.
-            String returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
+            ArrayList<String> returnMessages = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
             
             // Else execute the operation and register the response.
-            if (returnMessage == null) {
-                returnMessage = doSomethingWithMessage(receivedMessage);
-                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
+            if (returnMessages == null) {
+                returnMessages = executeCommands(receivedMessages, bookingData);
+                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessages);
             }
             
             // Then return the response.
-            data = Marshaller.marshallResponse(returnMessage, requestID);
+            data = Marshaller.marshall(returnMessages);
             dgPacket.setData(data);
             dgPacket.setAddress(dgPacket.getAddress());
             dgSocket.send(dgPacket); // Throws IOException
         }
     }
     
-    // Placeholder method until we have some functions to call in bookingData
-    public static String doSomethingWithMessage(String message) {
-        switch (1) {
-            case 1: return "confirmationID";
-            default: return "Invalid command";
-        }
-                
+    /**
+     * Method that handles all the calls to the 
+     * @param message The ArrayList<String> of messages which contains commands
+     * to execute and attributes to use in the command calls.
+     * @param bookingData The BookingData object that exists in the main method
+     * needs to be sent by reference since this method can't reach it otherwise
+     * @return An ArrayList<String> with the results to return to the client
+     */
+    public static ArrayList<String> executeCommands(ArrayList<String> message, BookingData bookingData) {
+        
+        return message;
     }
 
+    
+    
     public byte[] Start(ArrayList pFacility) {
         String lFacility = "";
 		

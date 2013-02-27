@@ -11,12 +11,10 @@ import java.util.HashMap;
  *
  * @author rikardandersson, Lance
  */
-public class BookingData implements Observable {
+public class BookingData {
     private ArrayList<String> aFacilityList;
         
     private HashMap<String, ArrayList<BookingEntity>> aRecord;
-    
-    private Observer aObserver;
 
     public BookingData() {
         aFacilityList = new ArrayList<String>();
@@ -45,11 +43,12 @@ public class BookingData implements Observable {
         return aRecord;
     }
     
-    public boolean registerBooking(String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
+    public DataMsg registerBooking(String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
         
         if(!aFacilityList.contains(pFacility)) {
-            notifyObserver("wrongName", "");
-            return false;
+            
+            return new DataMsg("wrongName", "");
+            
         }
         
         ArrayList<BookingEntity> lList = aRecord.get(pFacility);
@@ -57,8 +56,9 @@ public class BookingData implements Observable {
         //if any overlapping then fail to register
         for(BookingEntity lEntity: lList) {
             if (lEntity.isOverlapping(pStartDate, pEndDate)) {
-                notifyObserver("overlap", "");
-                return false; 
+                
+                return new DataMsg("overlap", "");
+                
             }    
         }
         
@@ -67,14 +67,11 @@ public class BookingData implements Observable {
         
         lList.add(new BookingEntity(pFacility, pStartDate, pEndDate, lID));
       
-        notifyObserver("register", lID);
+        return new DataMsg("register", lID);
         
-        notifyObserver("update" ,pFacility);
-        
-        return true;
     }
     
-    public boolean changeBooking(String pID, String indicator ,String pDate) throws CloneNotSupportedException {
+    public DataMsg changeBooking(String pID, String indicator ,String pDate) throws CloneNotSupportedException {
         String[] ID = pID.split("#");
         
         ArrayList<BookingEntity> lList = aRecord.get(ID[0]);
@@ -90,8 +87,9 @@ public class BookingData implements Observable {
         }
         
         if (exist == false) {
-            notifyObserver("wrongID", "");
-            return false;
+            
+            return new DataMsg("wrongID", "");
+            
         }
         
         String[] result = pDate.split("/");
@@ -112,46 +110,24 @@ public class BookingData implements Observable {
             lEndDate = lEntity.getEndDate().decrement(day, hour, minute);
         }
         else {
-            notifyObserver("wrongInd", "");
-            return false; 
+            
+            return new DataMsg("wrongInd", "");
+            
         }
         
         for(BookingEntity mEntity: lList) {
             if (mEntity.isOverlapping(lStartDate, lEndDate)) {
-                notifyObserver("overlap", "");
-                return false; 
+                
+                return new DataMsg("overlap", "");
+                
             }    
         }
         
         lEntity.setStartDate(lStartDate);
         lEntity.setEndDate(lEndDate);
         
-        notifyObserver("change" , pID);
-        notifyObserver("update" , ID[0]);
+        return new DataMsg("change" , ID[0]);
         
-        return true;
     }
-    
-
-    @Override
-    public void notifyObserver(String action, String msg) {
-        if (aObserver == null)
-        {
-            throw new NullPointerException("Error: no server response");
-        }
-	else
-	{
-            aObserver.handleEvent(action, msg);
-	}    
-    }
-
-    @Override
-    public void addObserver(Observer pObserver) {
-        aObserver = pObserver;
-    }
-
-    @Override
-    public void removeObserver() {
-        aObserver = null;
-    }
+     
 }

@@ -20,7 +20,7 @@ import java.util.HashMap;
  * @TODO: When the marshalling and unmarshalling functions have been written, 
  * make corresponding changes in this class.
  */
-public class BookingServer implements Observer{
+public class BookingServer {
         
     public static void main(String args[]) throws Exception { // Specify later 
         // Create a socket for UPD-port 8008
@@ -62,12 +62,13 @@ public class BookingServer implements Observer{
                 
     }
 
-    @Override
-    /**
-     * @param action = index of action type
-     * @param msg = message passed to server
-     */
-    public void handleEvent(String action, String msg) {
+    
+    
+    
+    public void handleDataMsg(DataMsg pDataMsg) {
+        String action = pDataMsg.getAction();
+        
+        String msg = pDataMsg.getMsg();
         
         //I do not use switch for only JRE 1.7 supports String
         if (action.equals("wrongName")) {
@@ -79,10 +80,6 @@ public class BookingServer implements Observer{
         }
         
         if (action.equals("register")) {
-            
-        }
-        
-        if (action.equals("update")) {
             
         }
         

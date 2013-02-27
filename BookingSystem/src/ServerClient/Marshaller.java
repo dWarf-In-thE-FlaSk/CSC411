@@ -2,6 +2,7 @@
  */
 package ServerClient;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -35,7 +36,7 @@ public class Marshaller {
      * marshall (and later send to the client)
      * @return An array of bytes to send as the data in a DatagramPacket
      */
-    public static byte[] marshall(ArrayList<String> messageData) {
+    public static byte[] marshall(List<String> messageData) {
         // Using StringBuilder as a more efficient way of building strings as
         // opposed to the operator += or StringBuffer
         StringBuilder marshalledStr = new StringBuilder();
@@ -62,12 +63,12 @@ public class Marshaller {
      * 
      * @param data array of bytes as extracted from a DatagramPacket and
      * marshalled via a method call from the function above.
-     * @return ArrayList of Strings formatted as in class-header
+     * @return List of Strings formatted as in class-header
      */
-    public static ArrayList<String> unmarshall(byte[] data) {
+    public static List<String> unmarshall(byte[] data) {
         String marshalledStr = data.toString(); 
 
-        ArrayList<String> unMarshalledStr = new ArrayList(Arrays.asList(marshalledStr.split("/")));
+        List<String> unMarshalledStr = new ArrayList(Arrays.asList(marshalledStr.split("/")));
         
         return unMarshalledStr;
     }

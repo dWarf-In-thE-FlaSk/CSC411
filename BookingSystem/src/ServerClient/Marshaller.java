@@ -26,19 +26,6 @@ import java.util.Iterator;
  * @author Rikard Andersson
  */
 public class Marshaller {
-
-    public static byte[] marshallResponse(String message, String requestID) {
-        // Placeholder function
-        return null;
-    }
-    public static ArrayList<String> unmarshallMessage(byte[] data) {
-        // Placeholder function
-        return null;
-    }
-    public static String unmarshallRequestID(byte[] data) {
-        // Placeholder function
-        return null;
-    }
     
     /**
      * Takes an array of commands and their attributes and flattens it to an

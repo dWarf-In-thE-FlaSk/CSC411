@@ -8,6 +8,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 
@@ -49,13 +51,13 @@ public class BookingServer {
             data = dgPacket.getData();
             
             // Unmarshalling methods. See static Marshaller methods for reference
-            ArrayList<String> receivedMessages = Marshaller.unmarshall(data);
+            List<String> receivedMessages = Marshaller.unmarshall(data);
             
             // The request ID of a message is the second element
             String requestID = receivedMessages.get(1);
             
             // If this request has already been processed once, get the response and resend it.
-            ArrayList<String> returnMessages = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
+            List<String> returnMessages = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
             
             // Else execute the operation and register the response.
             if (returnMessages == null) {
@@ -72,16 +74,68 @@ public class BookingServer {
     }
     
     /**
-     * Method that handles all the calls to the 
-     * @param message The ArrayList<String> of messages which contains commands
+     * Method that translates the calls made to the server into actual method
+     * invocations and returns the feedback.
+     * 
+     * @param message The List<String> of messages which contains commands
      * to execute and attributes to use in the command calls.
      * @param bookingData The BookingData object that exists in the main method
      * needs to be sent by reference since this method can't reach it otherwise
-     * @return An ArrayList<String> with the results to return to the client
+     * @return An List<String> with the results to return to the client
      */
-    public static ArrayList<String> executeCommands(ArrayList<String> message, BookingData bookingData) {
+    public static List<String> executeCommands(List<String> message, BookingData bookingData) {
+        List<String> returnMessage = new ArrayList<String>();
+        returnMessage.add("1"); // It's a response
         
-        return message;
+        Iterator<String> iterator = message.iterator();
+        
+        // Get the messageType and RequestID before starting to get commands
+        String messageType, requestID;
+        if (iterator.hasNext()) {
+            messageType = iterator.next();
+        } else {
+            returnMessage.add("invalid command");
+            return returnMessage;
+        }
+        
+        if (iterator.hasNext()) {
+            requestID = iterator.next();
+        } else {
+            returnMessage.add("invalid command");
+            return returnMessage;
+        }
+        
+        // Add the requestID to the returnMessage for the client to be able to
+        // tell which request this is a response to.
+        returnMessage.add(requestID);
+                
+        // Get all the commands and execute them.
+        while(iterator.hasNext()) {
+            String commandStr = iterator.next();
+            try {
+                int commandInt = Integer.parseInt(commandStr);
+                
+                switch (commandInt) {
+                    case 1:
+                        // New booking
+                        break;
+                    case 2:
+                        // Change booking
+                        break;
+                    case 3:
+                        // Check availability of booking
+                        break;
+                    case 4:
+                        // Monitor a facility
+                        break;
+                }
+                
+            } catch (NumberFormatException e) {
+                returnMessage.add("invalid command " + commandStr);
+                return returnMessage;
+            }    
+        }
+        return returnMessage;
     }
 
     

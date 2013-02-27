@@ -8,7 +8,7 @@
 package ServerClient;
 
 import java.net.SocketAddress;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -40,7 +40,7 @@ public class ServerLog {
      * @param client The client the request comes from and the response goes to.
      * @param response The respons sent back to the client
      */
-    public void registerRequest(SocketAddress client, String id, ArrayList<String> response) {
+    public void registerRequest(SocketAddress client, String id, List<String> response) {
         // If this is the first registration, initiate the log
         if (log == null) {
             log = new HashMap<SocketAddress, RequestResponsePair>();
@@ -77,7 +77,7 @@ public class ServerLog {
      * @return String containing the respons or null if request isn't the latest
      * one logged (for any reason).
      */
-    public ArrayList<String> responsForRequest(String id, SocketAddress client) {
+    public List<String> responsForRequest(String id, SocketAddress client) {
         if (log != null) {
             RequestResponsePair rrp = log.get(client);
             return (rrp.getRequestID().equals(id) ? rrp.getResponse() : null);
@@ -94,7 +94,7 @@ public class ServerLog {
     public class RequestResponsePair {
         
         private String requestID;
-        private ArrayList<String> response;
+        private List<String> response;
         
         /**
          * Constructor taking in parameters for requestID and response
@@ -102,7 +102,7 @@ public class ServerLog {
          * @param requestID The request ID
          * @param response Returned response
          */
-        public RequestResponsePair(String requestID, ArrayList<String> response) {
+        public RequestResponsePair(String requestID, List<String> response) {
 
             this.requestID = requestID;
             this.response = response;
@@ -126,13 +126,13 @@ public class ServerLog {
          * Setter method for response
          * @param requestID 
          */
-        public void setResponse(ArrayList<String> response) {
+        public void setResponse(List<String> response) {
             this.response = response;
         }
         /**
          * Getter method for response.
          */
-        public ArrayList<String> getResponse() {
+        public List<String> getResponse() {
             return this.response;
         }
         

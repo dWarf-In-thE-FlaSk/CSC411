@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * 
@@ -85,39 +86,20 @@ public class BookingServer {
      */
     public static List<String> executeCommands(List<String> message, BookingData bookingData) {
         List<String> returnMessage = new ArrayList<String>();
-        returnMessage.add("1"); // It's a response
-        
         Iterator<String> iterator = message.iterator();
         
-        // Get the messageType and RequestID before starting to get commands
-        String messageType, requestID;
-        if (iterator.hasNext()) {
-            messageType = iterator.next();
-        } else {
-            returnMessage.add("invalid command");
-            return returnMessage;
-        }
-        
-        if (iterator.hasNext()) {
-            requestID = iterator.next();
-        } else {
-            returnMessage.add("invalid command");
-            return returnMessage;
-        }
-        
-        // Add the requestID to the returnMessage for the client to be able to
-        // tell which request this is a response to.
-        returnMessage.add(requestID);
-                
-        // Get all the commands and execute them.
-        while(iterator.hasNext()) {
-            String commandStr = iterator.next();
-            try {
-                int commandInt = Integer.parseInt(commandStr);
-                
-                switch (commandInt) {
+        try {
+            // Get the messageType and RequestID before starting to get commands
+            String messageType = iterator.next();
+            String requestID = iterator.next();
+            returnMessage.add("1");
+            returnMessage.add(requestID);
+            
+            while (iterator.hasNext()) {
+                int command = Integer.parseInt(iterator.next());
+                switch(command) {
                     case 1:
-                        // New booking
+                        // New booking                        
                         break;
                     case 2:
                         // Change booking
@@ -129,13 +111,23 @@ public class BookingServer {
                         // Monitor a facility
                         break;
                 }
-                
-            } catch (NumberFormatException e) {
-                returnMessage.add("invalid command " + commandStr);
-                return returnMessage;
-            }    
+            }
+            
+        // This can happen if a String being parsed expected to contain a 
+        // command is not an int. 
+        } catch (NumberFormatException e) {
+            returnMessage.add("error_message");
+            returnMessage.add("No such command");
+            returnMessage.add(e.getMessage());
+        // This can happen for example if the user does not supply enough 
+        // attributes for a command.
+        } catch (NoSuchElementException e) {
+            returnMessage.add("error_message");
+            returnMessage.add("Wrong number of arguments");
+            returnMessage.add(e.getMessage());
+        } finally {
+            return returnMessage;
         }
-        return returnMessage;
     }
 
     

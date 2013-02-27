@@ -8,6 +8,7 @@
 package ServerClient;
 
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -23,7 +24,9 @@ import java.util.HashMap;
  * 
  * @TODO: Decided if we should only apply this technique to non-idempotent 
  * operations.
- * @TODO: Delete previous operations 
+ * @TODO: Delete previous operations
+ * 
+ * @author Rikard Andersson
  */
 public class ServerLog {
     // log will map request and responses against the address where it came from
@@ -37,7 +40,7 @@ public class ServerLog {
      * @param client The client the request comes from and the response goes to.
      * @param response The respons sent back to the client
      */
-    public void registerRequest(SocketAddress client, String id, String response) {
+    public void registerRequest(SocketAddress client, String id, ArrayList<String> response) {
         // If this is the first registration, initiate the log
         if (log == null) {
             log = new HashMap<SocketAddress, RequestResponsePair>();
@@ -60,7 +63,7 @@ public class ServerLog {
         if (log == null || log.containsKey(client)) {
             return false;
         } else {
-            return log.get(client).equals(id);
+            return log.get(client).getRequestID().equals(id);
         }
     }
     
@@ -74,7 +77,7 @@ public class ServerLog {
      * @return String containing the respons or null if request isn't the latest
      * one logged (for any reason).
      */
-    public String responsForRequest(String id, SocketAddress client) {
+    public ArrayList<String> responsForRequest(String id, SocketAddress client) {
         if (log != null) {
             RequestResponsePair rrp = log.get(client);
             return (rrp.getRequestID().equals(id) ? rrp.getResponse() : null);
@@ -85,11 +88,13 @@ public class ServerLog {
     
     /**
      * A helper class storing request and respons in an object.
+     * 
+     * @author Rikard Andersson
      */
     public class RequestResponsePair {
         
         private String requestID;
-        private String response;
+        private ArrayList<String> response;
         
         /**
          * Constructor taking in parameters for requestID and response
@@ -97,7 +102,7 @@ public class ServerLog {
          * @param requestID The request ID
          * @param response Returned response
          */
-        public RequestResponsePair(String requestID, String response) {
+        public RequestResponsePair(String requestID, ArrayList<String> response) {
 
             this.requestID = requestID;
             this.response = response;
@@ -121,13 +126,13 @@ public class ServerLog {
          * Setter method for response
          * @param requestID 
          */
-        public void setResponse(String response) {
+        public void setResponse(ArrayList<String> response) {
             this.response = response;
         }
         /**
          * Getter method for response.
          */
-        public String getResponse() {
+        public ArrayList<String> getResponse() {
             return this.response;
         }
         

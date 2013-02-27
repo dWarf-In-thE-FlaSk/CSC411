@@ -6,6 +6,7 @@ package ServerClient;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -25,10 +26,24 @@ public class BookingServer {
     public static void main(String args[]) throws Exception { // Specify later 
         // Create a socket for UPD-port 8008
         DatagramSocket dgSocket = new DatagramSocket(8008);
+        
         BookingData bookingData = new BookingData();
+        
         ServerLog serverLog = new ServerLog();
+        
         byte[] data = new byte[1024];
+        
         DatagramPacket dgPacket = new DatagramPacket(data, data.length);
+        
+        ArrayList<String> aList = new ArrayList<String>();
+        aList.add("LTA");
+        aList.add("LTB");
+        aList.add("LTC");
+        aList.add("LTD");
+        
+        bookingData.setFacilityList(aList);
+        
+        
 
         while(true) {
             dgSocket.receive(dgPacket); // Throws IOException
@@ -62,7 +77,24 @@ public class BookingServer {
                 
     }
 
-    
+    public byte[] Start(ArrayList pFacility) {
+        String lFacility = "";
+		
+        for (int i = 0; i < pFacility.size(); i++) {
+            lFacility = lFacility + pFacility.get(i) +" ";
+	}
+        
+        String startMsg = "Welcome to Booking System!\n" +
+                "facility list: " + lFacility + '\n'+
+                "please select the following three options:(by index)\n" +
+                "1. Make a new booking.\n(Indicate facility name, start and end date)\n" +
+                "2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n" +
+                "3. Check avaiablity of a facility.\n(Indicate facility name)\n" +
+                "4. Monitor a facility\n(Indicate facility name and interval)\n" +
+                "5. ";
+        
+        return startMsg.getBytes();
+    }
     
     
     public void handleDataMsg(DataMsg pDataMsg) {

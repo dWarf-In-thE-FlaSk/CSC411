@@ -6,6 +6,7 @@ package ServerClient;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -99,7 +100,15 @@ public class BookingServer {
                 int command = Integer.parseInt(iterator.next());
                 switch(command) {
                     case 1:
-                        // New booking                        
+                        // New booking
+                        String facility = new String();
+                        BookingDate startDate = new BookingDate();
+                        BookingDate endDate = new BookingDate();
+                        String confirmation = bookingData.registerBooking(facility, startDate, endDate); // Temp method
+                        ArrayList<SocketAddress> observerList = bookingData.getObservers(facility); // Temp method
+                        String facilityState = bookingData.getFacilityState(facility);
+                        notifyObservers(observerList, facilityState);
+                        returnMessage.add(confirmation);
                         break;
                     case 2:
                         // Change booking
@@ -129,9 +138,15 @@ public class BookingServer {
             return returnMessage;
         }
     }
+    
+    private static void notifyObservers(ArrayList<SocketAddress> observers, String message) {
+        // Connect to the observers
+    }
 
-    
-    
+    // I think this should be done at the client. Since there's no permanent
+    // connection between client and server it makes more sense to ask the user
+    // to give instructions which are then translated by the client to match the
+    // interface between client and server.
     public byte[] Start(ArrayList pFacility) {
         String lFacility = "";
 		

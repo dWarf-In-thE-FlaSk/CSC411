@@ -40,13 +40,11 @@ public class BookingServer {
         
         DatagramPacket dgPacket = new DatagramPacket(data, data.length);
         
-        ArrayList<String> aList = new ArrayList<String>();
-        aList.add("LTA");
-        aList.add("LTB");
-        aList.add("LTC");
-        aList.add("LTD");
+        bookingData.addFacility("LTA");
+        bookingData.addFacility("LTB");
+        bookingData.addFacility("LTC");
+        bookingData.addFacility("LTD");
         
-        bookingData.setFacilityList(aList); // Maybe we should just have a function in BookingData : addFacility(String name)
 
         while(true) {
             dgSocket.receive(dgPacket); // Throws IOException

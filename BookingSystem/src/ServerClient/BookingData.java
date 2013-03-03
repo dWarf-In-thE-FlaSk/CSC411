@@ -43,6 +43,14 @@ public class BookingData {
         return aRecord;
     }
     
+    public void addFacility(String pFacility) {
+        aFacilityList.add(pFacility);
+    }
+    
+    public void removeFacility(String pFacility){
+        aFacilityList.remove(pFacility);
+    }
+    
     public DataMsg registerBooking(String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
         
         if(!aFacilityList.contains(pFacility)) {

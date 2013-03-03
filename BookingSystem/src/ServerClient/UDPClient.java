@@ -15,9 +15,24 @@ public class UDPClient {
     
     private static int port;
     private static InetAddress server;
-    private static String message;
+    private static String message; //message cannot be a static field
+    
+    
     public static void main(String args[]) throws Exception {
-     
+        //we should have a while loop to ask user to input
+        
+        /* refer to the following code for taking instruction from user
+        
+        ArrayList message = new ArrayList();
+        Scanner scan = new Scanner(System.in); 
+        scan.useDelimiter(" |,|\\."); 
+	while (scan.hasNext()) { 
+            meaasge.add(scan.next());
+	}
+        
+        * then pass this message to marshaller
+        */
+        
         DatagramSocket clientSocket=new DatagramSocket(); 
         byte[] sendBuffer= new byte[512];
         byte[] rcvBuffer= new byte[512];

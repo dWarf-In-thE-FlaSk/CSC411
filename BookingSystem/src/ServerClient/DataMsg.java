@@ -26,7 +26,7 @@ public class DataMsg {
         this.requestID = requestID;
     }
 
-    public void setAttributes(List<Object> attributes) {
+    public void setAttributes(Map<String, String> attributes) {
         this.attributes = attributes;
     }
     
@@ -46,7 +46,7 @@ public class DataMsg {
         return requestID;
     }
 
-    public List<Object> getAttributes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
 

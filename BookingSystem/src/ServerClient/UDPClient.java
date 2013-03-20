@@ -9,12 +9,13 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
 
 /**
  *
  * @author
  */
-public class UDPClient {
+public class UDPClient{
     
     private static int port;
     private static InetAddress server;
@@ -39,7 +40,7 @@ public class UDPClient {
             
             ArrayList message =new ArrayList();
             List rcvMessage =new ArrayList();
-            
+            boolean timeout=true;
             Scanner input =new Scanner(System.in);
             input.useDelimiter("|,\\.");
             
@@ -55,22 +56,39 @@ public class UDPClient {
             sendBuffer=Marshaller.marshall(message);
             DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port); 
             
-            clientSocket.send(sendPacket);
-            DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
-            //*******************************************
+            while (timeout){
+                clientSocket.send(sendPacket);
+                DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
+                //*******************************************
             
-            //Timmer and loop Here!!!
+              //Timmer and loop Here!!!
+                boolean received=false;
+                clientSocket.setSoTimeout(10000);  // in ms
             
-            clientSocket.receive(receivePacket);
-            while (receivePacket.getLength()!=0){
-                byte[] data = receivePacket.getData();
-                rcvMessage = Marshaller.unmarshall(data);
-                //break the loop and print out the result!
+                
+                    try {
+                        while(!received){
+                            clientSocket.receive(receivePacket);
+                            while (receivePacket.getLength()!=0){
+                                byte[] data = receivePacket.getData();
+                                rcvMessage = Marshaller.unmarshall(data);
+                                received=true;
+                                timeout=false;
+                    //break the loop and print out the result!
+                            }
+                        }
+                    }catch (SocketTimeoutException e) {
+                        System.out.println("Timeout reached!!! " + e);
+                        timeout=true;
+                    
+                    }
+                
+            
+                }
+            //*************************
+            
+            
             }
-            //*******************************************
-            
-          
-        }
         
     }
     public UDPClient(String server, int port, String message) throws Exception {
@@ -99,4 +117,4 @@ public class UDPClient {
        }
         */
     }
-}
+

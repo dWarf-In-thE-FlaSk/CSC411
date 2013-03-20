@@ -82,7 +82,7 @@ public class BookingData {
         
     }
     
-    public DataMsg changeBooking(String pID, String indicator ,String pDate) throws CloneNotSupportedException {
+    public DataMsg changeBooking(String pID, String indicator ,BookingDate pDate) throws CloneNotSupportedException {
         String[] ID = pID.split("#");
         
         ArrayList<BookingEntity> lList = aRecord.get(ID[0]);
@@ -102,12 +102,10 @@ public class BookingData {
             return new DataMsg("wrongID", "");
             
         }
-        
-        String[] result = pDate.split("/");
-        
-        Integer day = new Integer(result[0]);
-        Integer hour = new Integer(result[1]);
-        Integer minute = new Integer(result[3]);
+              
+        Integer day = pDate.getDay().ordinal();
+        Integer hour = pDate.getHour();
+        Integer minute = pDate.getMinute();
         
         BookingDate lStartDate;
         BookingDate lEndDate;

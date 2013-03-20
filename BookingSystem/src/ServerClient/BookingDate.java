@@ -19,6 +19,10 @@ public class BookingDate {
         this.aDate = pDate;
     }
     
+    public BookingDate(BookingDate pDate) {
+        this.aDate = pDate.getDate();
+    }
+    
     public BookingDate(Day pDay, int pHour, int pMinute) {
         this.aDate = pDay.toString() + new Integer(pHour).toString() 
                 + new Integer(pMinute).toString();

@@ -4,6 +4,7 @@
  */
 package ServerClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,10 +15,34 @@ public class ResponseMessage implements Message {
     
     private static int messageType = 1;
     private int requestID;
+    private boolean requestSuccessful;
+    private List<String> responseMessages;
     
     @Override
     public List<String> serializeMessageContent() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<String> serializedContent = new ArrayList<String>();
+        
+        serializedContent.add(String.valueOf(this.getMessageType()));
+        serializedContent.add(String.valueOf(this.getRequestID()));
+        serializedContent.add(String.valueOf(requestSuccessful));
+        serializedContent.addAll(responseMessages);
+        
+        return serializedContent;
+    }
+
+    @Override
+    public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
+        this.setRequestID(Integer.parseInt(serializedMessageContent.get(1)));
+        this.setRequestSuccessful(Boolean.parseBoolean(serializedMessageContent.get(2)));
+        this.setResponseMessages(serializedMessageContent.subList(3, serializedMessageContent.size()));
+    }
+    
+    public boolean isRequestSuccessful() {
+        return requestSuccessful;
+    }
+
+    public List<String> getResponseMessages() {
+        return responseMessages;
     }
 
     @Override
@@ -27,16 +52,26 @@ public class ResponseMessage implements Message {
 
     @Override
     public int getRequestID() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return requestID;
+    }
+
+    public void setRequestSuccessful(boolean requestSuccessful) {
+        this.requestSuccessful = requestSuccessful;
+    }
+
+    public void setResponseMessages(List<String> responseMessages) {
+        this.responseMessages = responseMessages;
     }
     
     @Override
     public void setRequestID(int requestID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.requestID = requestID;
     }    
-
-    @Override
-    public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    public void addResponseMessage(String message) {
+        if (this.responseMessages == null) {
+            responseMessages = new ArrayList<String>();
+        }
+        responseMessages.add(message);
     }
 }

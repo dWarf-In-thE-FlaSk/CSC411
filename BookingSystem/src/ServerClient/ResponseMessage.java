@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class ResponseMessage implements Message {
     
-    private static int messageType = 1;
+    private static int messageType = 2;
     private int requestID;
     private boolean requestSuccessful;
     private List<String> responseMessages;

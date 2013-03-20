@@ -93,13 +93,17 @@ public class BookingServer {
                 case 1:
                     // Register
                 case 2:
-                    // 
+                    // Change booking
                 case 3:
-                    //
+                    // Check availability
                 case 4:
-                    //
+                    // Add facility
                 case 5:
-                    //
+                    // Something else 1
+                case 6:
+                    // Something else 2
+                case 7:
+                    // Register to observer
                 default:
                     returnMessage = getServerExceptionMessage("Not a valid request type");
             }

@@ -43,8 +43,15 @@ public class BookingData {
         return aRecord;
     }
     
-    public void addFacility(String pFacility) {
-        aFacilityList.add(pFacility);
+    public boolean addFacility(String pFacility) {
+        if (!aFacilityList.contains(pFacility)) {
+            aFacilityList.add(pFacility);
+            return true;
+        }
+        else {
+            return false;
+        }
+        
     }
     
     public void removeFacility(String pFacility){
@@ -59,16 +66,12 @@ public class BookingData {
             
         }
         
-        ArrayList<BookingEntity> lList = aRecord.get(pFacility);
-        
         //if any overlapping then fail to register
-        for(BookingEntity lEntity: lList) {
-            if (lEntity.isOverlapping(pStartDate, pEndDate)) {
-                
-                return new DataMsg("overlap", "");
-                
-            }    
+        if (!checkAvaibility(pFacility, pStartDate, pEndDate)) {
+             return new DataMsg("overlap", "");
         }
+        
+        ArrayList<BookingEntity> lList = aRecord.get(pFacility);
         
         //case that there is no overlapping entity in the list
         String lID = pFacility + "#" + lList.size();
@@ -123,12 +126,8 @@ public class BookingData {
             
         }
         
-        for(BookingEntity mEntity: lList) {
-            if (mEntity.isOverlapping(lStartDate, lEndDate)) {
-                
-                return new DataMsg("overlap", "");
-                
-            }    
+        if (!checkAvaibility(lEntity.getFacility(), lStartDate, lEndDate)) {
+             return new DataMsg("overlap", "");
         }
         
         lEntity.setStartDate(lStartDate);
@@ -136,6 +135,18 @@ public class BookingData {
         
         return new DataMsg("change" , ID[0]);
         
+    }
+    
+    public boolean checkAvaibility (String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
+        ArrayList<BookingEntity> lList = aRecord.get(pFacility);
+        
+        for(BookingEntity lEntity: lList) {
+            if (lEntity.isOverlapping(pStartDate, pEndDate)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
      
 }

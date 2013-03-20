@@ -15,8 +15,8 @@ public class BookingDate {
         super();
     }
     
-    public BookingDate(BookingDate pDate) {
-        this.aDate = pDate.getDate();
+    public BookingDate(String pDate) {
+        this.aDate = pDate;
     }
     
     public BookingDate(Day pDay, int pHour, int pMinute) {

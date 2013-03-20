@@ -13,17 +13,12 @@ import java.util.List;
 public class ExceptionMessage implements Message {
 
     @Override
-    public List<String> serialize() {
+    public List<String> serializeMessageContent() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public int getMessageType() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setMessageType() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

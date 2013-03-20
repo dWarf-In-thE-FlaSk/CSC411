@@ -51,22 +51,22 @@ public class BookingServer {
             data = dgPacket.getData();
             
             // Unmarshalling methods. See static Marshaller methods for reference
-            List<String> receivedMessages = Marshaller.unmarshall(data);
+            Message receivedMessage = Marshaller.unmarshall(data);
             
             // The request ID of a message is the second element
-            String requestID = receivedMessages.get(1);
+            int requestID = receivedMessage.getRequestID();
             
             // If this request has already been processed once, get the response and resend it.
-            List<String> returnMessages = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
+            Message returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
             
             // Else execute the operation and register the response.
-            if (returnMessages == null) {
-                returnMessages = executeCommands(receivedMessages, bookingData);
-                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessages);
+            if (returnMessage == null) {
+                returnMessage = executeCommands(receivedMessage, bookingData);
+                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
             }
             
             // Then return the response.
-            data = Marshaller.marshall(returnMessages);
+            data = Marshaller.marshall(returnMessage);
             dgPacket.setData(data);
             dgPacket.setAddress(dgPacket.getAddress());
             dgSocket.send(dgPacket); // Throws IOException
@@ -83,61 +83,18 @@ public class BookingServer {
      * needs to be sent by reference since this method can't reach it otherwise
      * @return An List<String> with the results to return to the client
      */
-    public static List<String> executeCommands(List<String> message, BookingData bookingData) {
-        List<String> returnMessage = new ArrayList<String>();
-        Iterator<String> iterator = message.iterator();
+    public static Message executeCommands(Message message, BookingData bookingData) {
+        Message returnMessage = new ResponseMessage();
         
-        try {
             // Get the messageType and RequestID before starting to get commands
-            String messageType = iterator.next();
-            String requestID = iterator.next();
-            returnMessage.add("1");
-            returnMessage.add(requestID);
-            
-            while (iterator.hasNext()) {
-                int command = Integer.parseInt(iterator.next());
-                switch(command) {
-                    case 1:
-                        // New booking
-                        String facility = new String();
-                        BookingDate startDate = new BookingDate();
-                        BookingDate endDate = new BookingDate();
-                        String confirmation = bookingData.registerBooking(facility, startDate, endDate); // Temp method
-                        ArrayList<SocketAddress> observerList = bookingData.getObservers(facility); // Temp method
-                        String facilityState = bookingData.getFacilityState(facility);
-                        notifyObservers(observerList, facilityState);
-                        returnMessage.add(confirmation);
-                        break;
-                    case 2:
-                        // Change booking
-                        break;
-                    case 3:
-                        // Check availability of booking
-                        break;
-                    case 4:
-                        // Monitor a facility
-                        break;
-                }
-            }
-            
-        // This can happen if a String being parsed expected to contain a 
-        // command is not an int. 
-        } catch (NumberFormatException e) {
-            returnMessage.add("error_message");
-            returnMessage.add("No such command");
-            returnMessage.add(e.getMessage());
-        // This can happen for example if the user does not supply enough 
-        // attributes for a command.
-        } catch (NoSuchElementException e) {
-            returnMessage.add("error_message");
-            returnMessage.add("Wrong number of arguments");
-            returnMessage.add(e.getMessage());
-        } finally {
-            return returnMessage;
-        }
+        int messageType = message.getMessageType();
+        int requestID = message.getRequestID();
+        returnMessage.setRequestID(requestID);
+        
+        return returnMessage;
     }
     
-    private static void notifyObservers(ArrayList<SocketAddress> observers, String message) {
+    private static void notifyObservers(ArrayList<SocketAddress> observers, Message message) {
         // Connect to the observers
     }
 
@@ -166,7 +123,7 @@ public class BookingServer {
     
     
     public void handleDataMsg(DataMsg pDataMsg) {
-        String action = pDataMsg.getAction();
+        String action = pDataMsg.getCommand();
         
         String msg = pDataMsg.getMsg();
         

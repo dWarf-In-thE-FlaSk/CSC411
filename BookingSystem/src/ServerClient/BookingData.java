@@ -54,10 +54,18 @@ public class BookingData {
         
     }
     
+    
     public void removeFacility(String pFacility){
         aFacilityList.remove(pFacility);
     }
     
+    /**
+     * 
+     * @param pFacility = facility name to register with
+     * @param pStartDate = start date of booking
+     * @param pEndDate = end date of booking
+     * @return 
+     */
     public DataMsg registerBooking(String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
         
         if(!aFacilityList.contains(pFacility)) {
@@ -82,6 +90,14 @@ public class BookingData {
         
     }
     
+    /**
+     * 
+     * @param pID = confirmation ID of booking to be changed
+     * @param indicator = time interval to change, started with "a"(advance) or "p"(postpone)
+     * @param pDate = the new date to e changed to
+     * @return
+     * @throws CloneNotSupportedException 
+     */
     public DataMsg changeBooking(String pID, String indicator ,BookingDate pDate) throws CloneNotSupportedException {
         String[] ID = pID.split("#");
         
@@ -135,6 +151,13 @@ public class BookingData {
         
     }
     
+    /**
+     * 
+     * @param pFacility = facility name to check
+     * @param pStartDate = start date
+     * @param pEndDate = end date
+     * @return 
+     */
     public boolean checkAvaibility (String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
         ArrayList<BookingEntity> lList = aRecord.get(pFacility);
         

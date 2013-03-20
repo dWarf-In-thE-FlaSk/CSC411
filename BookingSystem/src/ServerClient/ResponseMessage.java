@@ -12,6 +12,9 @@ import java.util.List;
  */
 public class ResponseMessage implements Message {
     
+    private static int messageType = 1;
+    private int requestID;
+    
     @Override
     public List<String> serializeMessageContent() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -19,18 +22,21 @@ public class ResponseMessage implements Message {
 
     @Override
     public int getMessageType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return messageType;
     }
 
     @Override
     public int getRequestID() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    @Override
+    public void setRequestID(int requestID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }    
 
     @Override
-    public void setRequestID() {
+    public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
 }

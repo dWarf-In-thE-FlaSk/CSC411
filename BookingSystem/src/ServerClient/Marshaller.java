@@ -82,10 +82,12 @@ public class Marshaller {
     
     private static Message initMessageWithType(int type) {
         switch(type) {
-            case 0:
-                return new RequestMessage();
             case 1:
+                return new RequestMessage();
+            case 2:
                 return new ResponseMessage();
+            case -1:
+                return new ExceptionMessage();
             default:
                 return new ExceptionMessage();
         }

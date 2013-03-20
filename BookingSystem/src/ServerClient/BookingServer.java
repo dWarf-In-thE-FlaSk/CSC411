@@ -51,22 +51,22 @@ public class BookingServer {
             data = dgPacket.getData();
             
             // Unmarshalling methods. See static Marshaller methods for reference
-            List<String> receivedMessages = Marshaller.unmarshall(data);
+            Message receivedMessage = Marshaller.unmarshall(data);
             
             // The request ID of a message is the second element
-            String requestID = receivedMessages.get(1);
+            int requestID = receivedMessage.getRequestID();
             
             // If this request has already been processed once, get the response and resend it.
-            List<String> returnMessages = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
+            Message returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
             
             // Else execute the operation and register the response.
-            if (returnMessages == null) {
-                returnMessages = executeCommands(receivedMessages, bookingData);
-                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessages);
+            if (returnMessage == null) {
+                returnMessage = executeCommands(receivedMessage, bookingData);
+                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
             }
             
             // Then return the response.
-            data = Marshaller.marshall(returnMessages);
+            data = Marshaller.marshall(returnMessage);
             dgPacket.setData(data);
             dgPacket.setAddress(dgPacket.getAddress());
             dgSocket.send(dgPacket); // Throws IOException
@@ -83,115 +83,42 @@ public class BookingServer {
      * needs to be sent by reference since this method can't reach it otherwise
      * @return An List<String> with the results to return to the client
      */
-    public static List<String> executeCommands(List<String> message, BookingData bookingData) {
-        List<String> returnMessage = new ArrayList<String>();
-        Iterator<String> iterator = message.iterator();
+    public static Message executeCommands(Message message, BookingData bookingData) {
+        Message returnMessage = null;
         
-        try {
-            // Get the messageType and RequestID before starting to get commands
-            String messageType = iterator.next();
-            String requestID = iterator.next();
-            returnMessage.add("1");
-            returnMessage.add(requestID);
+        if(message.getMessageType() == 1) { // It's a requestMessage!
+            RequestMessage reqMessage = (RequestMessage) message;
             
-            while (iterator.hasNext()) {
-                int command = Integer.parseInt(iterator.next());
-                switch(command) {
-                    case 1:
-                        // New booking
-                        String facility = new String();
-                        BookingDate startDate = new BookingDate();
-                        BookingDate endDate = new BookingDate();
-                        String confirmation = bookingData.registerBooking(facility, startDate, endDate); // Temp method
-                        ArrayList<SocketAddress> observerList = bookingData.getObservers(facility); // Temp method
-                        String facilityState = bookingData.getFacilityState(facility);
-                        notifyObservers(observerList, facilityState);
-                        returnMessage.add(confirmation);
-                        break;
-                    case 2:
-                        // Change booking
-                        break;
-                    case 3:
-                        // Check availability of booking
-                        break;
-                    case 4:
-                        // Monitor a facility
-                        break;
-                }
+            switch (reqMessage.getRequest()) {
+                case 1:
+                    // Register
+                case 2:
+                    // 
+                case 3:
+                    //
+                case 4:
+                    //
+                case 5:
+                    //
+                default:
+                    returnMessage = getServerExceptionMessage("Not a valid request type");
             }
-            
-        // This can happen if a String being parsed expected to contain a 
-        // command is not an int. 
-        } catch (NumberFormatException e) {
-            returnMessage.add("error_message");
-            returnMessage.add("No such command");
-            returnMessage.add(e.getMessage());
-        // This can happen for example if the user does not supply enough 
-        // attributes for a command.
-        } catch (NoSuchElementException e) {
-            returnMessage.add("error_message");
-            returnMessage.add("Wrong number of arguments");
-            returnMessage.add(e.getMessage());
-        } finally {
-            return returnMessage;
+        } else {
+            returnMessage = getServerExceptionMessage("Server did not receive a correct request message");
         }
+
+        returnMessage.setRequestID(message.getRequestID());
+        return returnMessage;
     }
     
-    private static void notifyObservers(ArrayList<SocketAddress> observers, String message) {
+    private static void notifyObservers(ArrayList<SocketAddress> observers, Message message) {
         // Connect to the observers
     }
-
-    // I think this should be done at the client. Since there's no permanent
-    // connection between client and server it makes more sense to ask the user
-    // to give instructions which are then translated by the client to match the
-    // interface between client and server.
-    public byte[] Start(ArrayList pFacility) {
-        String lFacility = "";
-		
-        for (int i = 0; i < pFacility.size(); i++) {
-            lFacility = lFacility + pFacility.get(i) +" ";
-	}
-        
-        String startMsg = "Welcome to Booking System!\n" +
-                "facility list: " + lFacility + '\n'+
-                "please select the following three options:(by index)\n" +
-                "1. Make a new booking.\n(Indicate facility name, start and end date)\n" +
-                "2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n" +
-                "3. Check avaiablity of a facility.\n(Indicate facility name)\n" +
-                "4. Monitor a facility\n(Indicate facility name and interval)\n" +
-                "5. ";
-        
-        return startMsg.getBytes();
+    
+    private static ExceptionMessage getServerExceptionMessage(String message) {
+        ExceptionMessage exMessage = new ExceptionMessage();
+        exMessage.setExceptionMessage(message);
+        exMessage.setExceptionType("serverException");
+        return exMessage;
     }
-    
-    
-    public void handleDataMsg(DataMsg pDataMsg) {
-        String action = pDataMsg.getAction();
-        
-        String msg = pDataMsg.getMsg();
-        
-        //I do not use switch for only JRE 1.7 supports String
-        if (action.equals("wrongName")) {
-            
-        }
-        
-        if (action.equals("overlap")) {
-            
-        }
-        
-        if (action.equals("register")) {
-            
-        }
-        
-        if (action.equals("wrongID")) {
-            
-        }
-        
-        if (action.equals("change")) {
-            
-        }
-        
-    }
-    
-    
 }

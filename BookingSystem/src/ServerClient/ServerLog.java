@@ -8,7 +8,6 @@
 package ServerClient;
 
 import java.net.SocketAddress;
-import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -40,7 +39,7 @@ public class ServerLog {
      * @param client The client the request comes from and the response goes to.
      * @param response The respons sent back to the client
      */
-    public void registerRequest(SocketAddress client, String id, List<String> response) {
+    public void registerRequest(SocketAddress client, int id, Message response) {
         // If this is the first registration, initiate the log
         if (log == null) {
             log = new HashMap<SocketAddress, RequestResponsePair>();
@@ -57,13 +56,13 @@ public class ServerLog {
      * @param client The client the request came from.
      * @return boolean indicating if the request by a certain ID exists
      */
-    public boolean requestIsLoggedForClient(String id, SocketAddress client) {
+    public boolean requestIsLoggedForClient(int id, SocketAddress client) {
         // If the log is not created or it doesn't contain the client key this
         // must be the first query about this client
         if (log == null || log.containsKey(client)) {
             return false;
         } else {
-            return log.get(client).getRequestID().equals(id);
+            return (log.get(client).getRequestID() == id);
         }
     }
     
@@ -77,10 +76,10 @@ public class ServerLog {
      * @return String containing the respons or null if request isn't the latest
      * one logged (for any reason).
      */
-    public List<String> responsForRequest(String id, SocketAddress client) {
+    public Message responsForRequest(int id, SocketAddress client) {
         if (log != null) {
             RequestResponsePair rrp = log.get(client);
-            return (rrp.getRequestID().equals(id) ? rrp.getResponse() : null);
+            return (rrp.getRequestID()== id ? rrp.getResponse() : null);
         } else {
             return null;
         }
@@ -93,8 +92,8 @@ public class ServerLog {
      */
     public class RequestResponsePair {
         
-        private String requestID;
-        private List<String> response;
+        private int requestID;
+        private Message response;
         
         /**
          * Constructor taking in parameters for requestID and response
@@ -102,7 +101,7 @@ public class ServerLog {
          * @param requestID The request ID
          * @param response Returned response
          */
-        public RequestResponsePair(String requestID, List<String> response) {
+        public RequestResponsePair(int requestID, Message response) {
 
             this.requestID = requestID;
             this.response = response;
@@ -112,13 +111,13 @@ public class ServerLog {
          * Setter method for requestID
          * @param requestID 
          */
-        public void setRequestID(String requestID) {
+        public void setRequestID(int requestID) {
             this.requestID = requestID;
         }
         /**
          * Getter method for requestID.
          */
-        public String getRequestID() {
+        public int getRequestID() {
             return this.requestID;
         }
         
@@ -126,13 +125,13 @@ public class ServerLog {
          * Setter method for response
          * @param requestID 
          */
-        public void setResponse(List<String> response) {
+        public void setResponse(Message response) {
             this.response = response;
         }
         /**
          * Getter method for response.
          */
-        public List<String> getResponse() {
+        public Message getResponse() {
             return this.response;
         }
         
@@ -140,9 +139,7 @@ public class ServerLog {
         public int hashCode() {
             int hash = 1;
             
-            if (this.requestID != null) {
-                hash += this.requestID.hashCode() * 89;
-            }
+            hash += (this.requestID + 1) * 89;
             
             if (this.response != null) {
                 hash += this.response.hashCode() * 89;
@@ -164,7 +161,7 @@ public class ServerLog {
                 RequestResponsePair rrp = (RequestResponsePair) o;
                 // Evaluating whether the response and request in the two 
                 // objects are the same or not and returning the result.
-                return (this.requestID.equals(rrp.getRequestID()) &&
+                return ((this.requestID == rrp.getRequestID()) &&
                         this.response.equals(rrp.getResponse()));
             }
             

@@ -15,16 +15,20 @@ public class BookingData {
     private ArrayList<String> aFacilityList;
         
     private HashMap<String, ArrayList<BookingEntity>> aRecord;
+    
+    private HashMap<String, ArrayList<Observer>> aObservers;
 
     public BookingData() {
         aFacilityList = new ArrayList<String>();
         aRecord = new HashMap<String, ArrayList<BookingEntity>>();
+        aObservers = new HashMap<String, ArrayList<Observer>>();
         
     }
     
-    public BookingData(ArrayList pFacilityList, HashMap pRecord) {
+    public BookingData(ArrayList pFacilityList) {
         aFacilityList = pFacilityList;
-        aRecord = pRecord;
+        aRecord = new HashMap<String, ArrayList<BookingEntity>>();
+        aObservers = new HashMap<String, ArrayList<Observer>>();
     }
 
     public void setFacilityList(ArrayList<String> pFacilityList) {

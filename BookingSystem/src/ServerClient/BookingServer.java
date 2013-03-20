@@ -91,21 +91,22 @@ public class BookingServer {
             
             switch (reqMessage.getRequest()) {
                 case 1:
+                    // Register
                 case 2:
+                    // 
                 case 3:
+                    //
                 case 4:
+                    //
                 case 5:
-                    
+                    //
                 default:
                     returnMessage = getServerExceptionMessage("Not a valid request type");
             }
+        } else {
+            returnMessage = getServerExceptionMessage("Server did not receive a correct request message");
         }
-        // Get the messageType and RequestID before starting to get commands
-        int messageType = message.getMessageType();
-        int requestID = message.getRequestID();
-        returnMessage.setRequestID(requestID);
-        
-        
+
         returnMessage.setRequestID(message.getRequestID());
         return returnMessage;
     }

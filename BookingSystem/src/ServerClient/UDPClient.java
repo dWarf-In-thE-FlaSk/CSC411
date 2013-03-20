@@ -6,6 +6,9 @@ package ServerClient;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -15,7 +18,7 @@ public class UDPClient {
     
     private static int port;
     private static InetAddress server;
-    private static String message; //message cannot be a static field
+    //private static String message; //message cannot be a static field
     
     
     public static void main(String args[]) throws Exception {
@@ -32,36 +35,68 @@ public class UDPClient {
         
         * then pass this message to marshaller
         */
-        
-        DatagramSocket clientSocket=new DatagramSocket(); 
-        byte[] sendBuffer= new byte[512];
-        byte[] rcvBuffer= new byte[512];
-        sendBuffer=message.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port); 
-        sendPkt(clientSocket,sendPacket);
-        DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
-        message=receivePkt(clientSocket,receivePacket); 
+        while(true){
+            
+            ArrayList message =new ArrayList();
+            List rcvMessage =new ArrayList();
+            
+            Scanner input =new Scanner(System.in);
+            input.useDelimiter("|,\\.");
+            
+            while(input.hasNext()){
+                message.add(input.next());
+            }
+            
+            DatagramSocket clientSocket=new DatagramSocket(); 
+            byte[] sendBuffer= new byte[1024];
+            byte[] rcvBuffer= new byte[1024];
+            
+            
+            sendBuffer=Marshaller.marshall(message);
+            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port); 
+            
+            clientSocket.send(sendPacket);
+            DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
+            //*******************************************
+            
+            //Timmer and loop Here!!!
+            
+            clientSocket.receive(receivePacket);
+            while (receivePacket.getLength()!=0){
+                byte[] data = receivePacket.getData();
+                rcvMessage = Marshaller.unmarshall(data);
+                //break the loop and print out the result!
+            }
+            //*******************************************
+            
+          
+        }
         
     }
     public UDPClient(String server, int port, String message) throws Exception {
         this.server = InetAddress.getByName(server);
         this.port=port;
-        this.message=message;
+       
            
         
     }
     
-    public static void sendPkt (DatagramSocket Socket, DatagramPacket packet ) throws IOException{
+    /*public static void sendPkt (DatagramSocket Socket, DatagramPacket packet ) throws IOException{
         
         Socket.send(packet);
         
     }// We need some code here
     
-     static String receivePkt (DatagramSocket Socket, DatagramPacket packet) throws IOException{
+     static List<String> receivePkt (DatagramSocket Socket, DatagramPacket packet) throws IOException{
          
         Socket.receive(packet);
-        String rcvMessage=new String(packet.getData()); 
+        
+        while (packet.getLength()!=0){
+        byte[] data = packet.getData();
+        List<String> rcvMessage = Marshaller.unmarshall(data);
          
         return(rcvMessage);
+       }
+        */
     }
 }

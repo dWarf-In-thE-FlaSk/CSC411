@@ -90,22 +90,48 @@ public class BookingServer {
             RequestMessage reqMessage = (RequestMessage) message;
             
             switch (reqMessage.getRequest()) {
-                case 1:
+                case 1: {
                     // Register
-                case 2:
+                    String facility = reqMessage.getAttribute("facility");
+                    BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
+                    BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));                    
+                    returnMessage = bookingData.registerBooking(facility, startDate, endDate);
+                    if (returnMessageIsSuccessful(returnMessage)) {
+                        notifyObservers(facility);
+                    }
+                }
+                case 2: {
                     // Change booking
-                case 3:
-                    // Check availability
-                case 4:
-                    // Add facility
-                case 5:
+                    String bookingID = reqMessage.getAttribute("bookingID");
+                    String changeInterval = reqMessage.getAttribute("changeInterval");
+                    BookingDate bookingDate = new BookingDate(reqMessage.getAttribute("bookingDate")); // What is this attribute?
+                    returnMessage = bookingData.changeBooking(bookingID, changeInterval, bookingDate);
+                    if (returnMessageIsSuccessful(returnMessage)) {
+                        notifyObservers(null); // Need a way to get the facility out of the request
+                    }
+                }
+                case 3: {
+                    String facility = reqMessage.getAttribute("facility");
+                    BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
+                    BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));
+                    returnMessage = bookingData.checkAvaibility(facility, startDate, endDate);
+                }
+                case 4: {
+                    String facility = reqMessage.getAttribute("facility");
+                    returnMessage = bookingData.addFacility(facility);
+                }
+                case 5: {
                     // Something else 1
-                case 6:
+                }
+                case 6: {
                     // Something else 2
-                case 7:
+                }
+                case 7: {
                     // Register to observer
-                default:
+                }
+                default: {
                     returnMessage = getServerExceptionMessage("Not a valid request type");
+                }
             }
         } else {
             returnMessage = getServerExceptionMessage("Server did not receive a correct request message");
@@ -115,8 +141,17 @@ public class BookingServer {
         return returnMessage;
     }
     
-    private static void notifyObservers(ArrayList<SocketAddress> observers, Message message) {
+    private static void notifyObservers(String facility) {
         // Connect to the observers
+    }
+    
+    private static boolean returnMessageIsSuccessful(Message returnMessage) {
+        if(returnMessage.getMessageType() == 2) {
+            ResponseMessage respMessage = (ResponseMessage) returnMessage;
+            return respMessage.isRequestSuccessful();
+        } else {
+            return false;
+        }
     }
     
     private static ExceptionMessage getServerExceptionMessage(String message) {

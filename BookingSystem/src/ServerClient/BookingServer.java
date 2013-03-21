@@ -17,7 +17,27 @@ import java.util.NoSuchElementException;
  * 
  * This class will contain the main method that runs and listens for calls
  * 
- * It will contain functions:
+ * 1: Register request
+ * Attributes for the RequestMessage: 
+ * "facility" - the facility to register for
+ * "startDate" - start date 
+ * "endDate" - end date
+ * 
+ * 2: Change booking
+ * Attributes for the RequestMessage:
+ * "bookingID" - 
+ * "changeInterval" - 
+ * "bookingDate"
+ * 
+ * 3: Check availability
+ * Attributes for the RequestMessage:
+ * "facility"
+ * "startDate"
+ * "endDate"
+ * 
+ * 4: Add facility
+ * Attributes for the RequestMessage:
+ * "facility"
  * 
  * @TODO: Do we need to handle corrupted packets or splitting a message into 
  * several packets?
@@ -77,8 +97,8 @@ public class BookingServer {
      * Method that translates the calls made to the server into actual method
      * invocations and returns the feedback.
      * 
-     * @param message The List<String> of messages which contains commands
-     * to execute and attributes to use in the command calls.
+     * @param message The Message which contains commands to execute and 
+     * attributes to use in the command calls.
      * @param bookingData The BookingData object that exists in the main method
      * needs to be sent by reference since this method can't reach it otherwise
      * @return An List<String> with the results to return to the client
@@ -111,12 +131,14 @@ public class BookingServer {
                     }
                 }
                 case 3: {
+                    // Check availabillity
                     String facility = reqMessage.getAttribute("facility");
                     BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
                     BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));
                     returnMessage = bookingData.checkAvaibility(facility, startDate, endDate);
                 }
                 case 4: {
+                    // Add facility
                     String facility = reqMessage.getAttribute("facility");
                     returnMessage = bookingData.addFacility(facility);
                 }

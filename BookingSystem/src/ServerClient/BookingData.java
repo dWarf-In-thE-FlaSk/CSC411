@@ -226,7 +226,7 @@ public class BookingData {
         ObserverList.add(new Observer(pFacility, pIPAddr, pExpireTime));
     }
     
-    public ArrayList getObservers(String pFacility) {
+    public ArrayList<Observer> getObservers(String pFacility) {
         ArrayList<Observer> candidates =  this.aObservers.get(pFacility);
         ArrayList<Observer> observers = new ArrayList<Observer>();
         

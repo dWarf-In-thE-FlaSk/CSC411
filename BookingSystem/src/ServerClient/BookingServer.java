@@ -4,8 +4,11 @@
  */
 package ServerClient;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketAddress;
+import java.util.List;
 
 /**
  * 
@@ -59,31 +62,52 @@ public class BookingServer {
         bookingData.addFacility("LTC");
         bookingData.addFacility("LTD");
         
+        // A message is lost every [lossFrequency] message received
+        int iterations = 0;
+        int requestLossFreq = 3;
+        int responseLossFreq = 6;
 
         while(true) {
+            // We begin listening for requests, this will wait until data is received.
             dgSocket.receive(dgPacket); // Throws IOException
-            data = dgPacket.getData();
             
-            // Unmarshalling methods. See static Marshaller methods for reference
-            Message receivedMessage = Marshaller.unmarshall(data);
+            // Check if we should simulate requst loss
+            if((iterations % requestLossFreq) == 0) { // We don't simulate a request lost on the way to the server.
+                data = dgPacket.getData();
+
+                // Unmarshalling methods. See static Marshaller methods for reference
+                Message receivedMessage = Marshaller.unmarshall(data);
+
+                // The request ID of a message is the second element
+                int requestID = receivedMessage.getRequestID();
+
+                // If this request has already been processed once, get the response and resend it.
+                Message returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
+
+                // Else execute the operation and register the response.
+                if (returnMessage == null) {
+                    returnMessage = executeCommands(receivedMessage, bookingData, dgPacket.getSocketAddress());
+                    serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
+                }
+
+                // Then return the response
+                // First see if we should simulate a response loss.
+                if (iterations % requestLossFreq == 0) {
+                    // If not, send the response
+                    data = Marshaller.marshall(returnMessage);
+                    dgPacket.setData(data);
+                    dgPacket.setAddress(dgPacket.getAddress());
+                    dgSocket.send(dgPacket); // Throws IOException                    
+                
+                } else {
+                    System.out.println("Simulating a lost response");
+                }
             
-            // The request ID of a message is the second element
-            int requestID = receivedMessage.getRequestID();
-            
-            // If this request has already been processed once, get the response and resend it.
-            Message returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
-            
-            // Else execute the operation and register the response.
-            if (returnMessage == null) {
-                returnMessage = executeCommands(receivedMessage, bookingData);
-                serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
+            } else { // We simulate a request being lost on the way to the server.
+                System.out.println("Simulating a lost request");
             }
             
-            // Then return the response.
-            data = Marshaller.marshall(returnMessage);
-            dgPacket.setData(data);
-            dgPacket.setAddress(dgPacket.getAddress());
-            dgSocket.send(dgPacket); // Throws IOException
+            iterations++;
         }
     }
     
@@ -97,57 +121,63 @@ public class BookingServer {
      * needs to be sent by reference since this method can't reach it otherwise
      * @return An List<String> with the results to return to the client
      */
-    public static Message executeCommands(Message message, BookingData bookingData) {
+    public static Message executeCommands(Message message, BookingData bookingData, SocketAddress requester) {
         Message returnMessage = null;
         
         if(message.getMessageType() == 1) { // It's a requestMessage!
             RequestMessage reqMessage = (RequestMessage) message;
-            
-            switch (reqMessage.getRequest()) {
-                case 1: {
-                    // Register
-                    String facility = reqMessage.getAttribute("facility");
-                    BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
-                    BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));                    
-                    returnMessage = bookingData.registerBooking(facility, startDate, endDate);
-                    if (returnMessageIsSuccessful(returnMessage)) {
-                        notifyObservers(facility);
+            try {
+                switch (reqMessage.getRequest()) {
+                    case 1: {
+                        // Register
+                        String facility = reqMessage.getAttribute("facility");
+                        BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
+                        BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));                    
+                        returnMessage = bookingData.registerBooking(facility, startDate, endDate);
+                        if (returnMessageIsSuccessful(returnMessage)) {
+                            notifyObservers(facility);
+                        }
+                    }
+                    case 2: {
+                        // Change booking
+                        String bookingID = reqMessage.getAttribute("bookingID");
+                        String changeInterval = reqMessage.getAttribute("changeIndicator");
+                        BookingDate changeDate = new BookingDate(reqMessage.getAttribute("changeDate")); // What is this attribute?
+                        returnMessage = bookingData.changeBooking(bookingID, changeInterval, changeDate);
+                        if (returnMessageIsSuccessful(returnMessage)) {
+                            notifyObservers(bookingData.getFacilityByID(bookingID)); // Use a method in BookingData to get the facility based on bookingID
+                        }
+                    }
+                    case 3: {
+                        // Check availabillity
+                        String facility = reqMessage.getAttribute("facility");
+                        BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
+                        BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));
+                        returnMessage = bookingData.checkAvaibility(facility, startDate, endDate);
+                    }
+                    case 4: {
+                        // Add facility
+                        String facility = reqMessage.getAttribute("facility");
+                        returnMessage = bookingData.addFacility(facility);
+                    }
+                    case 5: {
+                        // Something else 1
+                    }
+                    case 6: {
+                        // Something else 2
+                    }
+                    case 7: {
+                        // Register to observer
+                        String facility = reqMessage.getAttribute("facility");
+                        int interval = Integer.parseInt(reqMessage.getAttribute("interval"));
+                        returnMessage = bookingData.addObserver(facility, requester, interval);
+                    }
+                    default: {
+                        returnMessage = getServerExceptionMessage("Not a valid request type");
                     }
                 }
-                case 2: {
-                    // Change booking
-                    String bookingID = reqMessage.getAttribute("bookingID");
-                    String changeInterval = reqMessage.getAttribute("changeIndicator");
-                    BookingDate changeDate = new BookingDate(reqMessage.getAttribute("changeDate")); // What is this attribute?
-                    returnMessage = bookingData.changeBooking(bookingID, changeInterval, changeDate);
-                    if (returnMessageIsSuccessful(returnMessage)) {
-                        notifyObservers(null); // Use a method in BookingData to get the facility based on bookingID
-                    }
-                }
-                case 3: {
-                    // Check availabillity
-                    String facility = reqMessage.getAttribute("facility");
-                    BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
-                    BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));
-                    returnMessage = bookingData.checkAvaibility(facility, startDate, endDate);
-                }
-                case 4: {
-                    // Add facility
-                    String facility = reqMessage.getAttribute("facility");
-                    returnMessage = bookingData.addFacility(facility);
-                }
-                case 5: {
-                    // Something else 1
-                }
-                case 6: {
-                    // Something else 2
-                }
-                case 7: {
-                    // Register to observer
-                }
-                default: {
-                    returnMessage = getServerExceptionMessage("Not a valid request type");
-                }
+            } catch (Exception e) {
+                returnMessage = getServerExceptionMessage("An exception was thrown in the server: " + e.getMessage());
             }
         } else {
             returnMessage = getServerExceptionMessage("Server did not receive a correct request message");
@@ -157,8 +187,26 @@ public class BookingServer {
         return returnMessage;
     }
     
-    private static void notifyObservers(String facility) {
-        // Connect to the observers
+    private static void notifyObservers(String facility, BookingData bookingData) throws CloneNotSupportedException, IOException {
+        
+        // Get the list of observers for the facility being handled
+        List<Observer> observers = bookingData.getObservers(facility);
+        // Get the current availability for the facility
+        Message observerMessage = bookingData.getAvaibility(facility);
+        // Set a requestID, it's irrelevant in this case so just put it to 0
+        observerMessage.setRequestID(0);
+        // Marshall the data being sent to the observer.
+        byte[] data = Marshaller.marshall(observerMessage);
+        
+        // Make a DatagramSocket to send the packages through.
+        DatagramSocket dgSocket = new DatagramSocket(8008);
+        // Attach the data to the packet being sent.
+        DatagramPacket dgPacket = new DatagramPacket(data, data.length); 
+        
+        for(Observer observer : observers) {
+            dgPacket.setSocketAddress(observer.getaIPAddr());
+            dgSocket.send(dgPacket);
+        }
     }
     
     private static boolean returnMessageIsSuccessful(Message returnMessage) {

@@ -6,10 +6,7 @@ package ServerClient;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Timer;
+import java.util.*;
 
 /**
  *
@@ -36,50 +33,69 @@ public class UDPClient{
         
         * then pass this message to marshaller
         */
+        int requestID=1;
         while(true){
             
-            ArrayList message =new ArrayList();
+            ArrayList<String> message =new ArrayList<String>();
             List rcvMessage =new ArrayList();
+            
+            //---------------------------------------------
+            RequestMessage reqMessage=new RequestMessage();
+            //Random requestID=new Random();
+            //-----------------------------------------------
             boolean timeout=true;
             Scanner input =new Scanner(System.in);
             input.useDelimiter("|,\\.");
             
+            
+           makeMessage(reqMessage,message,requestID);
+            
             while(input.hasNext()){
                 message.add(input.next());
             }
+            
+            
             
             DatagramSocket clientSocket=new DatagramSocket(); 
             byte[] sendBuffer= new byte[1024];
             byte[] rcvBuffer= new byte[1024];
             
             
-            sendBuffer=Marshaller.marshall(message);
-            DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port); 
+            sendBuffer=Marshaller.marshall(reqMessage);
+            //************************************************
+            boolean finish=false;
+            while (!finish){
             
-            while (timeout){
-                clientSocket.send(sendPacket);
-                DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
+                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port); 
+            
+                while (timeout){
+                    clientSocket.send(sendPacket);
+                    DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
                 //*******************************************
             
               //Timmer and loop Here!!!
-                boolean received=false;
-                clientSocket.setSoTimeout(10000);  // in ms
+                    boolean received=false;
+                    clientSocket.setSoTimeout(10000);  // in ms
             
                 
-                    try {
-                        while(!received){
-                            clientSocket.receive(receivePacket);
-                            while (receivePacket.getLength()!=0){
-                                byte[] data = receivePacket.getData();
-                                rcvMessage = Marshaller.unmarshall(data);
-                                received=true;
-                                timeout=false;
-                    //break the loop and print out the result!
+                        try {
+                            while(!received){
+                                clientSocket.receive(receivePacket);
+                                while (receivePacket.getLength()!=0){
+                                    byte[] data = receivePacket.getData();
+                                   
+                                    // do the unmarshaller
+                                    rcvMessage = Marshaller.unmarshall(data);
+                                    received=true;
+                                    timeout=false;
+                                    finish=true;
+                        //break the loop and print out the result!
+                                }
                             }
-                        }
-                    }catch (SocketTimeoutException e) {
-                        System.out.println("Timeout reached!!! " + e);
-                        timeout=true;
+                        }catch (SocketTimeoutException e) {
+                            System.out.println("Timeout reached!!! " + e);
+                            System.out.println("Resend Message ");
+                            timeout=true;
                     
                     }
                 
@@ -89,6 +105,7 @@ public class UDPClient{
             
             
             }
+        }
         
     }
     public UDPClient(String server, int port, String message) throws Exception {
@@ -99,22 +116,40 @@ public class UDPClient{
         
     }
     
-    /*public static void sendPkt (DatagramSocket Socket, DatagramPacket packet ) throws IOException{
-        
-        Socket.send(packet);
-        
-    }// We need some code here
     
-     static List<String> receivePkt (DatagramSocket Socket, DatagramPacket packet) throws IOException{
-         
-        Socket.receive(packet);
+    static void makeMessage (RequestMessage reqMessage,ArrayList<String> message, int requestID){
         
-        while (packet.getLength()!=0){
-        byte[] data = packet.getData();
-        List<String> rcvMessage = Marshaller.unmarshall(data);
-         
-        return(rcvMessage);
-       }
-        */
+        reqMessage.setRequestID(requestID);
+        reqMessage.setRequest(new Integer(message.get(0)));
+        
+        switch (reqMessage.getRequest()){
+            
+            case 1:{
+                
+                reqMessage.setAttribute("facility",message.get(1));
+                reqMessage.setAttribute("startDate",message.get(2));
+                reqMessage.setAttribute("endDate",message.get(3));
+                
+            }
+            case 2:{
+                reqMessage.setAttribute("bookingID",message.get(1));
+                reqMessage.setAttribute("changeIndicator",message.get(2));
+                reqMessage.setAttribute("changeDate",message.get(3));
+            }
+            case 3:{
+                reqMessage.setAttribute("facility",message.get(1));
+                reqMessage.setAttribute("startDate",message.get(2));
+                reqMessage.setAttribute("endDate",message.get(3));
+            }
+            case 4:{
+                reqMessage.setAttribute("facility",message.get(1));
+                
+            }
+        }
+        
+        
+    }
+    
+
     }
 

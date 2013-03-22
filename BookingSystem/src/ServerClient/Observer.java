@@ -4,6 +4,7 @@
  */
 package ServerClient;
 
+import java.net.SocketAddress;
 import java.util.Date;
 
 /**
@@ -12,13 +13,13 @@ import java.util.Date;
  */
 public class Observer {
     private String aFacility;
-    private String aIPAddr;
-    private Date aExpireDate;
+    private SocketAddress aIPAddr;
+    private long aExpireTime;
 
-    public Observer(String aFacility, String aIPAddr, Date pExpireDate) {
+    public Observer(String aFacility, SocketAddress aIPAddr, long pExpireTime) {
         this.aFacility = aFacility;
         this.aIPAddr = aIPAddr;
-        this.aExpireDate = pExpireDate;
+        this.aExpireTime = pExpireTime;
     }
 
     public String getaFacility() {
@@ -29,29 +30,21 @@ public class Observer {
         this.aFacility = aFacility;
     }
 
-    public String getaIPAddr() {
+    public long getaExpireTime() {
+        return aExpireTime;
+    }
+
+    public void setaExpireTime(long aExpireTime) {
+        this.aExpireTime = aExpireTime;
+    }
+
+    public SocketAddress getaIPAddr() {
         return aIPAddr;
     }
 
-    public void setaIPAddr(String aIPAddr) {
+    public void setaIPAddr(SocketAddress aIPAddr) {
         this.aIPAddr = aIPAddr;
     }
 
-    public BookingDate getaStartDate() {
-        return aStartDate;
-    }
-
-    public void setaStartDate(BookingDate aStartDate) {
-        this.aStartDate = aStartDate;
-    }
-
-    public BookingDate getaEndDate() {
-        return aEndDate;
-    }
-
-    public void setaEndDate(BookingDate aEndDate) {
-        this.aEndDate = aEndDate;
-    }
     
-    public 
 }

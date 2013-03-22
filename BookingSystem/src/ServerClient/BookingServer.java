@@ -25,19 +25,19 @@ import java.util.NoSuchElementException;
  * 
  * 2: Change booking
  * Attributes for the RequestMessage:
- * "bookingID" - 
- * "changeInterval" - 
- * "bookingDate"
+ * "bookingID" - The ID of the booking as returned by the server when the booking was made.
+ * "changeIndicator" - if it's a postponement this should start with a "p", if it's an advancement it should start with an "a"
+ * "bookingDate" - The data to change the booking to.
  * 
  * 3: Check availability
  * Attributes for the RequestMessage:
- * "facility"
- * "startDate"
- * "endDate"
+ * "facility" - the facility name
+ * "startDate" - The start date to check from.
+ * "endDate" - The end date to check until.
  * 
  * 4: Add facility
  * Attributes for the RequestMessage:
- * "facility"
+ * "facility" - the facility to be added.
  * 
  * @TODO: Do we need to handle corrupted packets or splitting a message into 
  * several packets?

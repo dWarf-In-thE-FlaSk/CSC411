@@ -123,7 +123,8 @@ public class BookingServer {
                 case 2: {
                     // Change booking
                     String bookingID = reqMessage.getAttribute("bookingID");
-                    String changeInterval = reqMessage.getAttribute("changeInterval");
+                    String changeInterval = reqMessage.getAttribute("changeIndicator");
+                    BookingDate bookingDate = new BookingDate(reqMessage.getAttribute("bookingDate")); // What is this attribute?
                     returnMessage = bookingData.changeBooking(bookingID, changeInterval, bookingDate);
                     if (returnMessageIsSuccessful(returnMessage)) {
                         notifyObservers(null); // Need a way to get the facility out of the request

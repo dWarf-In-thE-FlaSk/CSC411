@@ -25,7 +25,7 @@ public class ResponseMessage implements Message {
         serializedContent.add(String.valueOf(this.getMessageType()));
         serializedContent.add(String.valueOf(this.getRequestID()));
         serializedContent.add(String.valueOf(requestSuccessful));
-        serializedContent.addAll(responseMessages);
+        serializedContent.addAll(this.getResponseMessages());
         
         return serializedContent;
     }
@@ -42,6 +42,9 @@ public class ResponseMessage implements Message {
     }
 
     public List<String> getResponseMessages() {
+        if (responseMessages == null) {
+            this.setResponseMessages(new ArrayList<String>());
+        }
         return responseMessages;
     }
 

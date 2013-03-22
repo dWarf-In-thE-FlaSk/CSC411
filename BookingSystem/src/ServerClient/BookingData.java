@@ -216,14 +216,26 @@ public class BookingData {
      * @param pIPAddr = observer IP address
      * @param pInterval = time interval to monitor in hours
      */
-    public void addObserver(String pFacility, SocketAddress pIPAddr, int pInterval) {
+    public Message addObserver(String pFacility, SocketAddress pIPAddr, int pInterval) {
+        ResponseMessage msg = new ResponseMessage();
+                
         Calendar lCDateTime = Calendar.getInstance();
 	long now = lCDateTime.getTimeInMillis();
         long pExpireTime = now + pInterval*3600;
         
         ArrayList ObserverList = aObservers.get(pFacility);
         
-        ObserverList.add(new Observer(pFacility, pIPAddr, pExpireTime));
+        boolean sus = ObserverList.add(new Observer(pFacility, pIPAddr, pExpireTime));
+        
+        if (sus) {
+            msg.setRequestSuccessful(sus);
+        }
+        else {
+            msg.setRequestSuccessful(false);
+            msg.addResponseMessage("client already exists");
+        }
+        
+        return msg;
     }
     
     public ArrayList<Observer> getObservers(String pFacility) {

@@ -58,22 +58,22 @@ public class RequestMessage implements Message {
     }
 
     public int getRequest() {
-        return request;
+        return this.request;
     }
 
     @Override
     public int getMessageType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.messageType;
     }
 
     @Override
     public int getRequestID() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.requestID;
     }
     
     @Override
     public void setRequestID(int requestID) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.requestID = requestID;
     }
     
     public String getAttribute(String key) {

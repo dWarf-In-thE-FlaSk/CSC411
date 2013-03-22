@@ -4,7 +4,9 @@
  */
 package ServerClient;
 
+import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -50,17 +52,24 @@ public class BookingData {
     public boolean addFacility(String pFacility) {
         if (!aFacilityList.contains(pFacility)) {
             aFacilityList.add(pFacility);
+            aRecord.put(pFacility, new ArrayList<BookingEntity>());
+            aObservers.put(pFacility, new ArrayList<Observer>());
             return true;
         }
         else {
             return false;
         }
-        
     }
     
     
     public void removeFacility(String pFacility){
         aFacilityList.remove(pFacility);
+    }
+  
+    public String getFacilityByID(String pID) {
+        String[] ID = pID.split("#");
+        
+        return ID[0];
     }
     
     /**
@@ -68,19 +77,28 @@ public class BookingData {
      * @param pFacility = facility name to register with
      * @param pStartDate = start date of booking
      * @param pEndDate = end date of booking
+     * @return a response message with confirmation ID
      * @return 
      */
-    public DataMsg registerBooking(String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
+    public Message registerBooking(String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
+        ResponseMessage msg = new ResponseMessage();
+        ExceptionMessage msgEx = new ExceptionMessage();
         
         if(!aFacilityList.contains(pFacility)) {
             
-            return new DataMsg("wrongName", "");
+            msgEx.setExceptionType("InputException");
+            msgEx.setExceptionMessage("wrong facility name, not exist!");
             
+            return msgEx;            
         }
         
         //if any overlapping then fail to register
         if (!checkAvaibility(pFacility, pStartDate, pEndDate)) {
-             return new DataMsg("overlap", "");
+            
+            msg.setRequestSuccessful(false);
+            msg.addResponseMessage("not available for overlapping");
+            
+            return msg;
         }
         
         ArrayList<BookingEntity> lList = aRecord.get(pFacility);
@@ -90,7 +108,10 @@ public class BookingData {
         
         lList.add(new BookingEntity(pFacility, pStartDate, pEndDate, lID));
       
-        return new DataMsg("register", lID);
+        msg.setRequestSuccessful(true);
+        msg.addResponseMessage(lID);
+        
+        return msg;
         
     }
     
@@ -98,11 +119,14 @@ public class BookingData {
      * 
      * @param pID = confirmation ID of booking to be changed
      * @param indicator = time interval to change, started with "a"(advance) or "p"(postpone)
-     * @param pDate = the new date to e changed to
-     * @return
+     * @param pDate = time interval to advance or postpone
+     * @return a response message with facility name
      * @throws CloneNotSupportedException 
      */
-    public DataMsg changeBooking(String pID, String indicator ,BookingDate pDate) throws CloneNotSupportedException {
+    public Message changeBooking(String pID, String indicator, BookingDate pDate) throws CloneNotSupportedException {
+        ResponseMessage msg = new ResponseMessage();
+        ExceptionMessage msgEx = new ExceptionMessage();
+        
         String[] ID = pID.split("#");
         
         ArrayList<BookingEntity> lList = aRecord.get(ID[0]);
@@ -119,10 +143,13 @@ public class BookingData {
         
         if (exist == false) {
             
-            return new DataMsg("wrongID", "");
+            msgEx.setExceptionType("InputException");
+            msgEx.setExceptionMessage("wrong ID, not exist!");
+            
+            return msgEx; 
             
         }
-              
+        
         Integer day = pDate.getDay().ordinal();
         Integer hour = pDate.getHour();
         Integer minute = pDate.getMinute();
@@ -140,18 +167,27 @@ public class BookingData {
         }
         else {
             
-            return new DataMsg("wrongInd", "");
+            msgEx.setExceptionType("InputException");
+            msgEx.setExceptionMessage("wrong Indicator, please enter advance or postpone");
+            
+            return msgEx; 
             
         }
         
         if (!checkAvaibility(lEntity.getFacility(), lStartDate, lEndDate)) {
-             return new DataMsg("overlap", "");
+            msg.setRequestSuccessful(false);
+            msg.addResponseMessage("not available for overlapping");
+            
+            return msg;
         }
         
         lEntity.setStartDate(lStartDate);
         lEntity.setEndDate(lEndDate);
         
-        return new DataMsg("change" , ID[0]);
+        msg.setRequestSuccessful(true);
+        msg.addResponseMessage(ID[0]);
+        
+        return msg;
         
     }
     
@@ -173,5 +209,53 @@ public class BookingData {
         
         return true;
     }
-     
+    
+    /**
+     * 
+     * @param pFacility = facility name to monitor
+     * @param pIPAddr = observer IP address
+     * @param pInterval = time interval to monitor in hours
+     */
+    public void addObserver(String pFacility, SocketAddress pIPAddr, int pInterval) {
+        Calendar lCDateTime = Calendar.getInstance();
+	long now = lCDateTime.getTimeInMillis();
+        long pExpireTime = now + pInterval*3600;
+        
+        ArrayList ObserverList = aObservers.get(pFacility);
+        
+        ObserverList.add(new Observer(pFacility, pIPAddr, pExpireTime));
+    }
+    
+    public ArrayList getObservers(String pFacility) {
+        ArrayList<Observer> candidates =  this.aObservers.get(pFacility);
+        ArrayList<Observer> observers = new ArrayList<Observer>();
+        
+        Calendar lCDateTime = Calendar.getInstance();
+	long now = lCDateTime.getTimeInMillis();
+        
+        for(Observer lObserver: candidates) {
+            if (now <= lObserver.getaExpireTime()) {
+                observers.add(lObserver);
+            }
+        }
+        
+        return observers;
+    }
+    
+    public Message getAvaibility (String pFacility) throws CloneNotSupportedException {
+        String info = "The facility " + pFacility + " is not available on: ";
+        
+        ArrayList<BookingEntity> bookings = this.aRecord.get(pFacility);
+        
+        for (BookingEntity lEntity: bookings) {
+            info = info + '\n' + "From" + lEntity.getStartDate() + "to" + lEntity.getEndDate();
+        }
+        
+        ResponseMessage avaibility = new ResponseMessage();
+        avaibility.setRequestSuccessful(true);
+        avaibility.addResponseMessage(info);
+        
+        return avaibility;
+        mmmm
+    } 
 }

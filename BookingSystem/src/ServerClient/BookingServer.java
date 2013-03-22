@@ -6,12 +6,6 @@ package ServerClient;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * 
@@ -127,7 +121,7 @@ public class BookingServer {
                     BookingDate changeDate = new BookingDate(reqMessage.getAttribute("changeDate")); // What is this attribute?
                     returnMessage = bookingData.changeBooking(bookingID, changeInterval, changeDate);
                     if (returnMessageIsSuccessful(returnMessage)) {
-                        notifyObservers(null); // Need a way to get the facility out of the request
+                        notifyObservers(null); // Use a method in BookingData to get the facility based on bookingID
                     }
                 }
                 case 3: {

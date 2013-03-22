@@ -135,7 +135,7 @@ public class BookingServer {
                         BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));                    
                         returnMessage = bookingData.registerBooking(facility, startDate, endDate);
                         if (returnMessageIsSuccessful(returnMessage)) {
-                            notifyObservers(facility);
+                            notifyObservers(facility, bookingData);
                         }
                     }
                     case 2: {
@@ -145,7 +145,7 @@ public class BookingServer {
                         BookingDate changeDate = new BookingDate(reqMessage.getAttribute("changeDate")); // What is this attribute?
                         returnMessage = bookingData.changeBooking(bookingID, changeInterval, changeDate);
                         if (returnMessageIsSuccessful(returnMessage)) {
-                            notifyObservers(bookingData.getFacilityByID(bookingID)); // Use a method in BookingData to get the facility based on bookingID
+                            notifyObservers(bookingData.getFacilityByID(bookingID), bookingData); // Use a method in BookingData to get the facility based on bookingID
                         }
                     }
                     case 3: {

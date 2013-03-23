@@ -37,8 +37,8 @@ public class UDPClient{
         while(true){
             
             ArrayList<String> message =new ArrayList<String>();
-            List rcvMessage =new ArrayList();
-            
+           // List rcvMessage =new ArrayList();
+            Message rcvMessage;
             //---------------------------------------------
             RequestMessage reqMessage=new RequestMessage();
             //Random requestID=new Random();
@@ -86,6 +86,17 @@ public class UDPClient{
                                    
                                     // do the unmarshaller
                                     rcvMessage = Marshaller.unmarshall(data);
+                                    
+                                    if (rcvMessage.getMessageType()==-1){
+                                        ExceptionMessage a=(ExceptionMessage)rcvMessage;
+                                        String responseString=a.getExceptionMessage();
+                                    }
+                                    if (rcvMessage.getMessageType()==2){
+                                        ResponseMessage a=(ResponseMessage)rcvMessage;
+                                        List<String> responseList=a.getResponseMessages();
+                                        String responseString=responseList.get(responseList.size()-1); //response String
+                                        
+                                    }
                                     received=true;
                                     timeout=false;
                                     finish=true;

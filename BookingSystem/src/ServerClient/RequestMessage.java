@@ -39,7 +39,7 @@ public class RequestMessage implements Message {
     
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
-
+        
         this.setRequest(Integer.parseInt(serializedMessageContent.get(0)));
                 
         if (attributes == null) {

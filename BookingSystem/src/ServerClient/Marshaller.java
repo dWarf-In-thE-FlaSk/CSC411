@@ -56,6 +56,10 @@ public class Marshaller {
                 marshalledStr.append("#");
             }
         }
+        
+        marshalledStr.append("#");
+        marshalledStr.append("end");
+        
         return marshalledStr.toString().getBytes();
     }
     
@@ -77,7 +81,18 @@ public class Marshaller {
         
         unMarshalledMessage.setRequestID(requestID);
         
-        unMarshalledMessage.unserializeAndSetMessageContent(unMarshalledList.subList(2, unMarshalledList.size()));
+        List<String> remaining = unMarshalledList.subList(2, unMarshalledList.size());
+        
+        int lastIndex = remaining.size() - 1;
+        
+        String newLast = remaining.get(lastIndex).trim();
+        
+        remaining.set(lastIndex, newLast);
+        
+        //System.out.println("The request is printed here: " + Integer.parseInt(remaining.get(0)));
+        //System.out.println(remaining.get(lastIndex).startsWith("end"));
+        
+        unMarshalledMessage.unserializeAndSetMessageContent(remaining);
         
         return unMarshalledMessage;
     }

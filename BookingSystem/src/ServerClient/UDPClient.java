@@ -184,12 +184,16 @@ public class UDPClient {
             }
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
-                reqMessage.setAttribute("startDate", message.get(2));
-                reqMessage.setAttribute("endDate", message.get(3));
+                reqMessage.setAttribute("days", message.get(2));
+                
             }
             case 4: {
                 reqMessage.setAttribute("facility", message.get(1));
+                reqMessage.setAttribute("interval", message.get(2));
 
+            }
+            case 5: {
+                reqMessage.setAttribute("bookingID", message.get(1));
             }
         }
     
@@ -203,12 +207,13 @@ public class UDPClient {
 	  
 	String startMsg = "Welcome to Booking System!\n" +
 		"facility list: " + lFacility + '\n'+
-			"please select the following three options:(by index)\n" +
-				"1. Make a new booking.\n(Indicate facility name, start and end date)\n" +
-					"2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n" +
-						"3. Check avaiablity of a facility.\n(Indicate facility name)\n" +
-							"4. Monitor a facility\n(Indicate facility name and interval)\n" +
-								"5. ";
+		"please select the following three options:(by index)\n" +
+		"1. Make a new booking.\n(Indicate facility name, start and end date)\n" +
+		"2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n" +
+                "3. Check avaiablity of a facility.\n(Indicate facility name and days)\n" +
+		"4. Monitor a facility\n(Indicate facility name and interval)\n" +
+                "5. Cancel a booking\n(Indicate the confirmation ID)\n" +
+                "6. Check all facilities' availability\n";
 
 	System.out.println(startMsg);
     }    

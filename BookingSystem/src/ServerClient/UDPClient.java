@@ -69,9 +69,9 @@ public class UDPClient {
             String[] lIP = lIPAddr.split("\\.");
             
 
-            byte[] lIPByte = new byte[]{new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
+            //byte[] lIPByte = new byte[]{new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
 
-            server.getByAddress(lIPByte);
+            server.getByName(lIPAddr);
             System.out.print("Please Enter the Port No.: ");
 
             Scanner portScan = new Scanner(System.in);

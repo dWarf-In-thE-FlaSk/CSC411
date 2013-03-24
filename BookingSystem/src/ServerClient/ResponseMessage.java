@@ -79,4 +79,38 @@ public class ResponseMessage implements Message {
         }
         responseMessages.add(message);
     }
+    
+    public boolean equals(Object o) {
+        if (o == null) {
+            // If the object is null they should not be considered equal
+            return false;
+        } else if (!(o instanceof ResponseMessage)) {
+            // If the object is not of the same class as this object then
+            // it's not equal and we cannot continue the operations in else.
+            return false;
+        } else {
+            // Type casting the object since we know it's the same type
+            ResponseMessage rm = (ResponseMessage) o;
+            // Se if the containers in the ResponseMessages matches. If the do
+            // they are the same.
+            return ((this.requestID == rm.getRequestID()) &&
+                    (this.requestSuccessful == rm.isRequestSuccessful()) &&
+                    this.responseMessages.equals(rm.getResponseMessages()));
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 1;
+
+        hash += (this.requestID + 1) * 89;
+        if (this.requestSuccessful) {
+            hash += 13;
+        }
+        
+        if (this.responseMessages != null) {
+            hash += this.responseMessages.hashCode() * 89;
+        }
+        return hash;
+    }
 }

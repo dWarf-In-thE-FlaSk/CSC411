@@ -42,8 +42,8 @@ public class Marshaller {
         StringBuilder marshalledStr = new StringBuilder();
         
         // First two things in the message is the message type and the requestID
-        marshalledStr.append(String.valueOf(messageData.getMessageType()) + "/");
-        marshalledStr.append(String.valueOf(messageData.getRequestID())+ "/");
+        marshalledStr.append(String.valueOf(messageData.getMessageType()) + "#");
+        marshalledStr.append(String.valueOf(messageData.getRequestID())+ "#");
         
         Iterator<String> listIterator = messageData.serializeMessageContent().iterator();
         
@@ -53,7 +53,7 @@ public class Marshaller {
             
             // Appending the delimiter "/" between each object
             if(listIterator.hasNext()) {
-                marshalledStr.append("/");
+                marshalledStr.append("#");
             }
         }
         return marshalledStr.toString().getBytes();
@@ -68,7 +68,7 @@ public class Marshaller {
     public static Message unmarshall(byte[] data) throws UnsupportedEncodingException {
         String marshalledStr = new String(data, "UTF-8");
 
-        List<String> unMarshalledList = new ArrayList(Arrays.asList(marshalledStr.split("/")));
+        List<String> unMarshalledList = new ArrayList(Arrays.asList(marshalledStr.split("#")));
         
         int messageType = Integer.parseInt(unMarshalledList.get(0)); // NumberFormatException uncaught
         int requestID = Integer.parseInt(unMarshalledList.get(1)); // NumberFormatException uncaught

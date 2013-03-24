@@ -66,7 +66,8 @@ public class UDPClient {
 
             String lIPAddr = IPScan.next();
 
-            String[] lIP = lIPAddr.split(".");
+            String[] lIP = lIPAddr.split("\\.");
+            
 
             byte[] lIPByte = new byte[]{new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
 

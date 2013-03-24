@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package ServerClient;
 
@@ -8,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author rikardandersson
+ * This is the message returned from the server to the client after a
+ * RequestMessage is sent the opposite direction. That is unless an exception is
+ * thrown at the server side in which case an ExceptionMessage will be passed
+ * instead.
+ * 
+ * @author Rikard Andersson
  */
 public class ResponseMessage implements Message {
     

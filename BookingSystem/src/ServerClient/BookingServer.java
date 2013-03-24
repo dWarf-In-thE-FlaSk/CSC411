@@ -172,7 +172,7 @@ public class BookingServer {
                         String bookingID = reqMessage.getAttribute("bookingID");
                         String changeIndicator = reqMessage.getAttribute("changeIndicator");
                         BookingDate changeDate = new BookingDate(reqMessage.getAttribute("changeDate")); // What is this attribute?
-                        System.out.println("Chaning booking with ID " + bookingID +
+                        System.out.println("Changing booking with ID " + bookingID +
                                 " with indicator " + changeIndicator +
                                 " to date " + changeDate);
                         returnMessage = bookingData.changeBooking(bookingID, changeIndicator, changeDate);

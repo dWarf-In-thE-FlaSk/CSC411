@@ -28,8 +28,6 @@ public class RequestMessage implements Message {
     @Override
     public List<String> serializeMessageContent() {
         List<String> serializedContent = new ArrayList<String>();
-        serializedContent.add(String.valueOf(this.getMessageType()));
-        serializedContent.add(String.valueOf(this.getRequestID()));
         serializedContent.add(String.valueOf(this.getRequest()));
         
         for (Map.Entry<String, String> entry : getAttributes().entrySet()) {

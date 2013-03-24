@@ -54,8 +54,6 @@ public class ExceptionMessage implements Message {
     @Override
     public List<String> serializeMessageContent() {
         List<String> serializedContent = new ArrayList<String>();
-        serializedContent.add(String.valueOf(this.getMessageType()));
-        serializedContent.add(String.valueOf(this.getRequestID()));
         serializedContent.add(exceptionType);
         serializedContent.add(exceptionMessage);
         return serializedContent;

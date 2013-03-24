@@ -23,9 +23,7 @@ public class ResponseMessage implements Message {
     @Override
     public List<String> serializeMessageContent() {
         List<String> serializedContent = new ArrayList<String>();
-        
-        serializedContent.add(String.valueOf(this.getMessageType()));
-        serializedContent.add(String.valueOf(this.getRequestID()));
+
         serializedContent.add(String.valueOf(requestSuccessful));
         serializedContent.addAll(this.getResponseMessages());
         

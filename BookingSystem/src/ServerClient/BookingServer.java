@@ -70,6 +70,7 @@ public class BookingServer {
         
         DatagramPacket dgPacket = new DatagramPacket(data, data.length);
         
+        // Initializing the server with a few facilities.
         bookingData.addFacility("LTA");
         bookingData.addFacility("LTB");
         bookingData.addFacility("LTC");
@@ -168,9 +169,10 @@ public class BookingServer {
                         returnMessage = bookingData.checkAvailability(facility, days);
                     }
                     case 4: {
-                        // Add facility
+                        // Register to observer
                         String facility = reqMessage.getAttribute("facility");
-                        // returnMessage = bookingData.addFacility(facility);
+                        int interval = Integer.parseInt(reqMessage.getAttribute("interval"));
+                        returnMessage = bookingData.addObserver(facility, requester, interval);
                     }
                     case 5: {
                         // Cancel booking - non-idempotent
@@ -185,10 +187,9 @@ public class BookingServer {
                         returnMessage = bookingData.checkAll();
                     }
                     case 7: {
-                        // Register to observer
+                        // Add facility
                         String facility = reqMessage.getAttribute("facility");
-                        int interval = Integer.parseInt(reqMessage.getAttribute("interval"));
-                        returnMessage = bookingData.addObserver(facility, requester, interval);
+                        returnMessage = bookingData.addFacility(facility);
                     }
                     case 8: {
                         // Get the available facilities

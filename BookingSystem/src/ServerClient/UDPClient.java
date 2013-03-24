@@ -17,7 +17,8 @@ public class UDPClient {
     private static int port;
     private static InetAddress server;
     //private static String message; //message cannot be a static field
-
+    
+    
     public static void main(String args[]) throws Exception {
         //we should have a while loop to ask user to input
 

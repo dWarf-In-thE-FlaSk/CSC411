@@ -106,7 +106,7 @@ public class BookingServer {
 
                 // Then return the response
                 // First see if we should simulate a response loss.
-                if (iterations % requestLossFreq == 0) {
+                if (iterations % responseLossFreq == 0) {
                     // If not, send the response
                     data = Marshaller.marshall(returnMessage);
                     dgPacket.setData(data);

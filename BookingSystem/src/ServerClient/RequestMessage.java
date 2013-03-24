@@ -24,10 +24,6 @@ public class RequestMessage implements Message {
     private int requestID;
     private int request;
     private Map<String, String> attributes;
-
-    public RequestMessage() {
-        attributes = new HashMap<String, String>();
-    }
     
     @Override
     public List<String> serializeMessageContent() {
@@ -36,7 +32,7 @@ public class RequestMessage implements Message {
         serializedContent.add(String.valueOf(this.getRequestID()));
         serializedContent.add(String.valueOf(this.getRequest()));
         
-        for (Map.Entry<String, String> entry : attributes.entrySet()) {
+        for (Map.Entry<String, String> entry : getAttributes().entrySet()) {
             serializedContent.add(entry.getKey());
             serializedContent.add(entry.getValue());
         }
@@ -93,6 +89,13 @@ public class RequestMessage implements Message {
             attributes = new HashMap<String, String>();
         }
         attributes.put(key, value);
+    }
+    
+    private Map<String, String> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<String, String>();
+        }
+        return attributes;
     }
     
     public boolean equals(Object o) {

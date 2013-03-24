@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package ServerClient;
 
@@ -12,7 +10,13 @@ import java.util.Map;
 
 /**
  *
- * @author rikardandersson
+ * This type of Message is sent from the client to the server and contains a
+ * mapping of all the attributes required for the server to execute the command.
+ * The client have to append the correct attributes, correctly named when
+ * constructing this message in order for the server to be able to construct a
+ * correct ResponseMessage.
+ * 
+ * @author Rikard Andersson
  */
 public class RequestMessage implements Message {
 

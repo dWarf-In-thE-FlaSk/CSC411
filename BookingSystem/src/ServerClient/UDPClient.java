@@ -190,33 +190,6 @@ public class UDPClient {
 
             }
         }
-<<<<<<< HEAD
-
-=======
-        
-        
-    }
     
-    public void Start(List<String> pFacility) {
-	String lFacility = "";
-	for (int i = 0; i < pFacility.size(); i++) {
-		lFacility = lFacility + pFacility.get(i) +" ";
-	}     
-	  
-	String startMsg = "Welcome to Booking System!\n" +
-		"facility list: " + lFacility + '\n'+
-			"please select the following three options:(by index)\n" +
-				"1. Make a new booking.\n(Indicate facility name, start and end date)\n" +
-					"2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n" +
-						"3. Check avaiablity of a facility.\n(Indicate facility name)\n" +
-							"4. Monitor a facility\n(Indicate facility name and interval)\n" +
-								"5. ";
-
-	System.out.println(startMsg);
-}
-
-}
->>>>>>> add Start method in client
-
     }
 }

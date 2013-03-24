@@ -57,6 +57,8 @@ public class UDPClient {
             DatagramSocket clientSocket = new DatagramSocket();
             byte[] sendBuffer = new byte[1024];
             byte[] rcvBuffer = new byte[1024];
+            
+            
 
 
             sendBuffer = Marshaller.marshall(reqMessage);

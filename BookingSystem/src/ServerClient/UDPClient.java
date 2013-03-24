@@ -31,15 +31,113 @@ public class UDPClient {
          * then pass this message to marshaller
          */
         int requestID = 0;
-        while (true) {
+        boolean Error= false;
+        while (true&&!Error) {
 
             requestID++;
 
             ArrayList<String> message = new ArrayList<String>();
+             List<String> facilityList = null ;
+            
             Message rcvMessage = null;
             RequestMessage reqMessage = new RequestMessage();
             String responseString = new String();
             boolean timeout = true;
+            RequestMessage reqFacility = new RequestMessage();
+            byte[] reqFac = new byte[1024];
+            byte[] rcvFaciity=new byte[1024];
+            boolean finish=false;
+            DatagramSocket clientSocket = new DatagramSocket();
+            int count;
+            boolean received = false;
+            
+            
+            
+            reqFacility.setRequest(8);
+            reqFacility.setRequestID(requestID);
+            requestID++;
+            reqFac=Marshaller.marshall(reqFacility);
+            
+           
+            System.out.print("Please Enter the IP Address: ");
+            Scanner IPScan = new Scanner(System.in);
+           
+            String lIPAddr = IPScan.next();
+            
+            String[] lIP = lIPAddr.split(".");
+            
+            byte[] lIPByte = new byte[] {new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
+            
+            server.getByAddress(lIPByte);
+            
+            System.out.print("Please Enter the Port No.: ");
+            
+            Scanner portScan = new Scanner(System.in);
+            
+            port = portScan.nextInt();
+            
+            while (!finish) {
+                DatagramPacket sendFacility = new DatagramPacket(reqFac, reqFac.length, server, port);
+                count = 3;
+                
+                
+                
+                while (timeout&&count!=0) {
+                    clientSocket.send(sendFacility);
+                    DatagramPacket receiveFacility = new DatagramPacket(rcvFaciity, rcvFaciity.length);
+                    clientSocket.setSoTimeout(10000);
+                    //****************
+                    
+                     try {
+                        while (!received) {
+                            clientSocket.receive(receiveFacility );
+                            while (receiveFacility .getLength() != 0) {
+                                byte[] data = receiveFacility .getData();
+
+                                // do the unmarshaller
+                                rcvMessage = Marshaller.unmarshall(data);
+                                received = true;
+                                timeout = false;
+                                finish = true;
+                                //break the loop and print out the result!
+                            }
+                        }
+                    } catch (SocketTimeoutException e) {         //when timeout print error messageand resend
+                        System.out.println("Timeout reached!!! " + e);
+                        System.out.println("Resend Message now");
+                        timeout = true;
+                        count--;
+
+
+                    }
+                     
+                     
+                     
+                    
+                    //*****************
+                    
+                    
+                }
+                if (count==0){
+                    finish=true;
+                    System.out.println("Error ");
+                    Error=true;
+                    
+                }else{
+                   ResponseMessage fac = (ResponseMessage) rcvMessage;
+                  facilityList=fac.getResponseMessages();
+                   
+                   
+                }
+                
+                    
+                    
+            }
+            
+            
+            if (!Error) {
+                
+            Start(facilityList);
             Scanner input = new Scanner(System.in);
 
 
@@ -54,7 +152,7 @@ public class UDPClient {
 
 
 
-            DatagramSocket clientSocket = new DatagramSocket();
+            
             byte[] sendBuffer = new byte[1024];
             byte[] rcvBuffer = new byte[1024];
             
@@ -63,12 +161,12 @@ public class UDPClient {
 
             sendBuffer = Marshaller.marshall(reqMessage);
             //************************************************Start transmit/retransmit message 
-            boolean finish = false;
-
+            finish = false;
+            timeout=true;
             while (!finish) {
 
                 DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port);
-                int count = 5;
+                count = 5;
                 while (timeout) {
                     clientSocket.send(sendPacket);
 
@@ -76,7 +174,7 @@ public class UDPClient {
                     //*******************************************
 
                     //Timmer and loop Here!!!
-                    boolean received = false;
+                    received = false;
                     clientSocket.setSoTimeout(10000);  // in ms
 
 
@@ -151,11 +249,11 @@ public class UDPClient {
 
 
             }
-
+         }
         }
     }
 
-    public UDPClient(String server, int port, String message) throws Exception {
+    public UDPClient(String server, int port) throws Exception {
         this.server = InetAddress.getByName(server);
         this.port = port;
 
@@ -199,7 +297,7 @@ public class UDPClient {
     
     }
 
-    public void Start (List<String> pFacility) {
+    public  static void Start (List<String> pFacility) {
 	String lFacility = "";
 	for (int i = 0; i < pFacility.size(); i++) {
 		lFacility = lFacility + pFacility.get(i) +" ";

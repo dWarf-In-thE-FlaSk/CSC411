@@ -13,7 +13,7 @@ import java.util.List;
 public interface Message {
     // This will return a flattened version of the content of the Message
     public List<String> serializeMessageContent();
-    // This will build the Message from the flattened version of the content return by the above method.
+    // This will build the part of the Message that is unique to the Message type. (And hence excluded from this interface)
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent);
     // Every message will have a RequestID created and appended by the client.
     public int getRequestID();

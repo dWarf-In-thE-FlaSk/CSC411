@@ -62,9 +62,8 @@ public class ExceptionMessage implements Message {
     }
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
-        this.setRequestID(Integer.parseInt(serializedMessageContent.get(1)));
-        this.setExceptionType(serializedMessageContent.get(2));
-        this.setExceptionMessage(serializedMessageContent.get(3));
+        this.setExceptionType(serializedMessageContent.get(0));
+        this.setExceptionMessage(serializedMessageContent.get(1));
     }
     
     public boolean equals(Object o) {

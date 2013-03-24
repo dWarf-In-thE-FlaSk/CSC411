@@ -41,14 +41,14 @@ public class RequestMessage implements Message {
     
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
-        this.setRequestID(Integer.parseInt(serializedMessageContent.get(1)));
-        this.setRequest(Integer.parseInt(serializedMessageContent.get(2)));
-        
+
+        this.setRequest(Integer.parseInt(serializedMessageContent.get(0)));
+                
         if (attributes == null) {
             attributes = new HashMap<String, String>();
         }
         
-        Iterator<String> iter = serializedMessageContent.subList(3, serializedMessageContent.size()).iterator();
+        Iterator<String> iter = serializedMessageContent.subList(1, serializedMessageContent.size()).iterator();
         while(iter.hasNext()) {
             String key = iter.next();
             if(iter.hasNext()) {

@@ -34,9 +34,8 @@ public class ResponseMessage implements Message {
 
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
-        this.setRequestID(Integer.parseInt(serializedMessageContent.get(1)));
-        this.setRequestSuccessful(Boolean.parseBoolean(serializedMessageContent.get(2)));
-        this.setResponseMessages(serializedMessageContent.subList(3, serializedMessageContent.size()));
+        this.setRequestSuccessful(Boolean.parseBoolean(serializedMessageContent.get(0)));
+        this.setResponseMessages(serializedMessageContent.subList(1, serializedMessageContent.size()));
     }
     
     public boolean isRequestSuccessful() {

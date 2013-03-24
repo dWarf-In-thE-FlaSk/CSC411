@@ -73,10 +73,10 @@ public class Marshaller {
         int messageType = Integer.parseInt(unMarshalledList.get(0)); // NumberFormatException uncaught
         int requestID = Integer.parseInt(unMarshalledList.get(1)); // NumberFormatException uncaught
         
-        
         Message unMarshalledMessage = initMessageWithType(messageType);
+        
         unMarshalledMessage.setRequestID(requestID);
-        // 
+        
         unMarshalledMessage.unserializeAndSetMessageContent(unMarshalledList.subList(2, unMarshalledList.size()));
         
         return unMarshalledMessage;

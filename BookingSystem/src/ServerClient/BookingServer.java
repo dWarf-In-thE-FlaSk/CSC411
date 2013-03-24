@@ -210,12 +210,26 @@ public class BookingServer {
         return returnMessage;
     }
     
-    private static void notifyObservers(String facility, BookingData bookingData) throws CloneNotSupportedException, IOException {
+    /**
+     * 
+     * @param facility - The facility for which to notify the observers
+     * @param bookingData - The bookingData to be operated upon. This needs to
+     * be passed since the BookingServer class is static.
+     * @throws CloneNotSupportedException
+     * @throws IOException 
+     */
+    private static void notifyObservers(String facility, BookingData bookingData) throws IOException {
         
         // Get the list of observers for the facility being handled
         List<Observer> observers = bookingData.getObservers(facility);
         // Get the current availability for the facility
-        Message observerMessage = bookingData.getAvailability(facility);
+        Message observerMessage;
+        // Catch the error if something happened. 
+        try {
+            observerMessage = bookingData.getAvailability(facility);
+        } catch (CloneNotSupportedException e) {
+            observerMessage = getServerExceptionMessage("Something happened to the facility you are monitorin but an error was generated while trying to notify you.");
+        }
         // Set a requestID, it's irrelevant in this case so just put it to 0
         observerMessage.setRequestID(0);
         // Marshall the data being sent to the observer.
@@ -232,6 +246,9 @@ public class BookingServer {
         }
     }
     
+    /**
+     * Check a Message to see if a request generated a successful ResponseMessage
+     */
     private static boolean returnMessageIsSuccessful(Message returnMessage) {
         if(returnMessage.getMessageType() == 2) {
             ResponseMessage respMessage = (ResponseMessage) returnMessage;
@@ -240,7 +257,9 @@ public class BookingServer {
             return false;
         }
     }
-    
+    /**
+     * Private method to get a standard "serverException" ExceptionMessage
+     */
     private static ExceptionMessage getServerExceptionMessage(String message) {
         ExceptionMessage exMessage = new ExceptionMessage();
         exMessage.setExceptionMessage(message);

@@ -36,6 +36,19 @@ import java.util.List;
  * Attributes for the RequestMessage:
  * "facility" - the facility to be added.
  * 
+ * 5: Cancel booking
+ * "bookingID" - The bookingID to be cancelled
+ * 
+ * 6: Check all facilities
+ * no input
+ * 
+ * 7: Register as an observer
+ * "facility" - the facility to monitor
+ * "interval" - the interval to monitor over
+ * 
+ * 8: Get available facilies
+ * no input
+ * 
  * @TODO: Do we need to handle corrupted packets or splitting a message into 
  * several packets?
  * @TODO: When the marshalling and unmarshalling functions have been written, 
@@ -177,6 +190,10 @@ public class BookingServer {
                         int interval = Integer.parseInt(reqMessage.getAttribute("interval"));
                         returnMessage = bookingData.addObserver(facility, requester, interval);
                     }
+                    case 8: {
+                        // Get the available facilities
+                        returnMessage = bookingData.getFacilityList();
+                    }
                     default: {
                         returnMessage = getServerExceptionMessage("Not a valid request type");
                     }
@@ -197,7 +214,7 @@ public class BookingServer {
         // Get the list of observers for the facility being handled
         List<Observer> observers = bookingData.getObservers(facility);
         // Get the current availability for the facility
-        Message observerMessage = bookingData.getAvailabilitys(facility);
+        Message observerMessage = bookingData.getAvailability(facility);
         // Set a requestID, it's irrelevant in this case so just put it to 0
         observerMessage.setRequestID(0);
         // Marshall the data being sent to the observer.

@@ -33,19 +33,20 @@ public class UDPClient{
         
         * then pass this message to marshaller
         */
-        int requestID=1;
+        int requestID=0;
         while(true){
             
+            requestID++;
+            
             ArrayList<String> message =new ArrayList<String>();
-           // List rcvMessage =new ArrayList();
-            Message rcvMessage;
-            //---------------------------------------------
+            Message rcvMessage=null;
             RequestMessage reqMessage=new RequestMessage();
-            //Random requestID=new Random();
-            //-----------------------------------------------
+            String responseString=new String(); 
             boolean timeout=true;
             Scanner input =new Scanner(System.in);
-            input.useDelimiter("|,\\.");
+            
+            
+            input.useDelimiter(" |,|\\.");
             
             
            makeMessage(reqMessage,message,requestID);
@@ -62,14 +63,16 @@ public class UDPClient{
             
             
             sendBuffer=Marshaller.marshall(reqMessage);
-            //************************************************
+            //************************************************Start transmit/retransmit message 
             boolean finish=false;
+            
             while (!finish){
             
                 DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port); 
             
                 while (timeout){
                     clientSocket.send(sendPacket);
+                    
                     DatagramPacket receivePacket=new DatagramPacket(rcvBuffer,rcvBuffer.length); 
                 //*******************************************
             
@@ -87,38 +90,58 @@ public class UDPClient{
                                     // do the unmarshaller
                                     rcvMessage = Marshaller.unmarshall(data);
                                     
-                                    if (rcvMessage.getMessageType()==-1){
+                            /*        if (rcvMessage.getMessageType()==-1){                       //Error message
                                         ExceptionMessage a=(ExceptionMessage)rcvMessage;
-                                        String responseString=a.getExceptionMessage();
+                                        responseString=a.getExceptionMessage();
                                     }
                                     if (rcvMessage.getMessageType()==2){
                                         ResponseMessage a=(ResponseMessage)rcvMessage;
                                         List<String> responseList=a.getResponseMessages();
-                                        String responseString=responseList.get(responseList.size()-1); //response String
+                                        responseString=responseList.get(responseList.size()-1); //response String
                                         
-                                    }
+                                    }*/
                                     received=true;
                                     timeout=false;
                                     finish=true;
                         //break the loop and print out the result!
                                 }
                             }
-                        }catch (SocketTimeoutException e) {
+                        }catch (SocketTimeoutException e) {         //when timeout print error messageand resend
                             System.out.println("Timeout reached!!! " + e);
-                            System.out.println("Resend Message ");
+                            System.out.println("Resend Message now");
                             timeout=true;
+                            
                     
                     }
-                
-            
-                }
+                        System.out.println("Response Message: ");
+                        if (rcvMessage.getMessageType()==-1){                       //Error message
+                               ExceptionMessage a=(ExceptionMessage)rcvMessage;
+                               responseString=a.getExceptionMessage();
+                               System.out.println(responseString);
+                         }
+                        else if (rcvMessage.getMessageType()==2){
+                               ResponseMessage a=(ResponseMessage)rcvMessage;
+                               List<String> responseList=a.getResponseMessages();
+                               responseString=responseList.get(responseList.size()-1);
+                               
+                               if (a.isRequestSuccessful())
+                                  System.out.println("Request Unsuccessful"+ responseString);
+                               else 
+                                  System.out.println("Request successful. Booking ID:"+responseString); 
+                               
+                                                   
+                         }
             //*************************
             
             
+                    }
+            
+                    
+                    
             }
-        }
         
     }
+ }
     public UDPClient(String server, int port, String message) throws Exception {
         this.server = InetAddress.getByName(server);
         this.port=port;

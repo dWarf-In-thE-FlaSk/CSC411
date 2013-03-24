@@ -66,4 +66,34 @@ public class ExceptionMessage implements Message {
         this.setExceptionType(serializedMessageContent.get(2));
         this.setExceptionMessage(serializedMessageContent.get(3));
     }
+    
+    public boolean equals(Object o) {
+        if (o == null) {
+            // If the object is null they should not be considered equal
+            return false;
+        } else if (!(o instanceof ExceptionMessage)) {
+            // If the object is not of the same class as this object then
+            // it's not equal and we cannot continue the operations in else.
+            return false;
+        } else {
+            // Type casting the object since we know it's the same type
+            ExceptionMessage em = (ExceptionMessage) o;
+            // Se if the containers in the ResponseMessages matches. If the do
+            // they are the same.
+            return ((this.requestID == em.getRequestID()) &&
+                    this.exceptionMessage.equals(em.getExceptionMessage()) &&
+                    this.exceptionType.equals(em.getExceptionType()));
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 1;
+
+        hash += (this.requestID + 1) * 89;
+        hash += this.exceptionMessage.hashCode() * 13;
+        hash += this.exceptionType.hashCode() * 13;
+        
+        return hash;
+    }
 }

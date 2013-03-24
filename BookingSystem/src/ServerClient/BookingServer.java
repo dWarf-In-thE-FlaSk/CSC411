@@ -224,7 +224,7 @@ public class BookingServer {
         List<Observer> observers = bookingData.getObservers(facility);
         // Get the current availability for the facility
         Message observerMessage;
-        // Catch the error if something happened. 
+        // Catch the error if something went wrong in generating the message to the observer. 
         try {
             observerMessage = bookingData.getAvailability(facility);
         } catch (CloneNotSupportedException e) {

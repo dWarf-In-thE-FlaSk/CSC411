@@ -31,234 +31,194 @@ public class UDPClient {
          * then pass this message to marshaller
          */
         int requestID = 0;
-        boolean Error= false;
-        while (true&&!Error) {
+        boolean Error = false;
+        while (true && !Error) {
 
             requestID++;
 
             ArrayList<String> message = new ArrayList<String>();
-             List<String> facilityList = null ;
-            
+            List<String> facilityList = null;
+
             Message rcvMessage = null;
+            
             RequestMessage reqMessage = new RequestMessage();
             String responseString = new String();
             boolean timeout = true;
+            
             RequestMessage reqFacility = new RequestMessage();
             byte[] reqFac = new byte[1024];
-            byte[] rcvFaciity=new byte[1024];
-            boolean finish=false;
+            byte[] rcvFaciity = new byte[1024];
+            boolean finish = false;
+
             DatagramSocket clientSocket = new DatagramSocket();
             int count;
             boolean received = false;
-            
-            
-            
+
             reqFacility.setRequest(8);
             reqFacility.setRequestID(requestID);
             requestID++;
-            reqFac=Marshaller.marshall(reqFacility);
-            
-           
+            reqFac = Marshaller.marshall(reqFacility);
+
+
             System.out.print("Please Enter the IP Address: ");
             Scanner IPScan = new Scanner(System.in);
-           
+
             String lIPAddr = IPScan.next();
-            
+
             String[] lIP = lIPAddr.split(".");
-            
-            byte[] lIPByte = new byte[] {new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
-            
+
+            byte[] lIPByte = new byte[]{new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
+
             server.getByAddress(lIPByte);
-            
             System.out.print("Please Enter the Port No.: ");
-            
+
             Scanner portScan = new Scanner(System.in);
-            
+
             port = portScan.nextInt();
-            
+
             while (!finish) {
+
                 DatagramPacket sendFacility = new DatagramPacket(reqFac, reqFac.length, server, port);
                 count = 3;
-                
-                
-                
-                while (timeout&&count!=0) {
+
+                while (timeout && count != 0) {
                     clientSocket.send(sendFacility);
                     DatagramPacket receiveFacility = new DatagramPacket(rcvFaciity, rcvFaciity.length);
                     clientSocket.setSoTimeout(10000);
-                    //****************
-                    
-                     try {
-                        while (!received) {
-                            clientSocket.receive(receiveFacility );
-                            while (receiveFacility .getLength() != 0) {
-                                byte[] data = receiveFacility .getData();
-
-                                // do the unmarshaller
-                                rcvMessage = Marshaller.unmarshall(data);
-                                received = true;
-                                timeout = false;
-                                finish = true;
-                                //break the loop and print out the result!
-                            }
-                        }
-                    } catch (SocketTimeoutException e) {         //when timeout print error messageand resend
-                        System.out.println("Timeout reached!!! " + e);
-                        System.out.println("Resend Message now");
-                        timeout = true;
-                        count--;
-
-
-                    }
-                     
-                     
-                     
-                    
-                    //*****************
-                    
-                    
-                }
-                if (count==0){
-                    finish=true;
-                    System.out.println("Error ");
-                    Error=true;
-                    
-                }else{
-                   ResponseMessage fac = (ResponseMessage) rcvMessage;
-                  facilityList=fac.getResponseMessages();
-                   
-                   
-                }
-                
-                    
-                    
-            }
-            
-            
-            if (!Error) {
-                
-            Start(facilityList);
-            Scanner input = new Scanner(System.in);
-
-
-            input.useDelimiter(" |,|\\.");
-
-
-            makeMessage(reqMessage, message, requestID);
-
-            while (input.hasNext()) {
-                message.add(input.next());
-            }
-
-
-
-            
-            byte[] sendBuffer = new byte[1024];
-            byte[] rcvBuffer = new byte[1024];
-            
-            
-
-
-            sendBuffer = Marshaller.marshall(reqMessage);
-            //************************************************Start transmit/retransmit message 
-            finish = false;
-            timeout=true;
-            while (!finish) {
-
-                DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port);
-                count = 5;
-                while (timeout) {
-                    clientSocket.send(sendPacket);
-
-                    DatagramPacket receivePacket = new DatagramPacket(rcvBuffer, rcvBuffer.length);
-                    //*******************************************
-
-                    //Timmer and loop Here!!!
-                    received = false;
-                    clientSocket.setSoTimeout(10000);  // in ms
-
 
                     try {
                         while (!received) {
-                            clientSocket.receive(receivePacket);
-                            while (receivePacket.getLength() != 0) {
-                                byte[] data = receivePacket.getData();
+                            clientSocket.receive(receiveFacility);
+                            while (receiveFacility.getLength() != 0) {
+                                byte[] data = receiveFacility.getData();
 
                                 // do the unmarshaller
                                 rcvMessage = Marshaller.unmarshall(data);
-
-                                /*
-                                 * if (rcvMessage.getMessageType()==-1){ //Error
-                                 * message ExceptionMessage
-                                 * a=(ExceptionMessage)rcvMessage;
-                                 * responseString=a.getExceptionMessage(); } if
-                                 * (rcvMessage.getMessageType()==2){
-                                 * ResponseMessage
-                                 * a=(ResponseMessage)rcvMessage; List<String>
-                                 * responseList=a.getResponseMessages();
-                                 * responseString=responseList.get(responseList.size()-1);
-                                 * //response String
-                                 *
-                                 * }
-                                 */
                                 received = true;
                                 timeout = false;
                                 finish = true;
                                 //break the loop and print out the result!
                             }
                         }
-                    } catch (SocketTimeoutException e) {         //when timeout print error messageand resend
+                    } 
+                    catch (SocketTimeoutException e) {         //when timeout print error messageand resend
+                        
                         System.out.println("Timeout reached!!! " + e);
                         System.out.println("Resend Message now");
                         timeout = true;
                         count--;
-
-
-                    }
-
-                    if (count == 0) {
-                        timeout = false;
-                        finish = true;
                     }
 
                 }
+                
+                if (count == 0) {
+                    
+                    finish = true;
+                    System.out.println("Error ");
+                    Error = true;
+                } 
+                else {
+                    
+                    ResponseMessage fac = (ResponseMessage) rcvMessage;
+                    facilityList = fac.getResponseMessages();
+                }
+            }
 
-                if (count != 0) {
-                    System.out.println("Response Message: ");
-                    if (rcvMessage.getMessageType() == -1) {                       //Error message
-                        ExceptionMessage a = (ExceptionMessage) rcvMessage;
-                        responseString = a.getExceptionMessage();
-                        System.out.println(responseString);
-                    } else if (rcvMessage.getMessageType() == 2) {
-                        ResponseMessage a = (ResponseMessage) rcvMessage;
-                        List<String> responseList = a.getResponseMessages();
-                        responseString = responseList.get(responseList.size() - 1);
 
-                        if (a.isRequestSuccessful()) {
-                            System.out.println("Request Unsuccessful" + responseString);
-                        } else {
-                            System.out.println("Request successful. Booking ID:" + responseString);
+            if (!Error) {
+
+                Start(facilityList);
+                Scanner input = new Scanner(System.in);
+
+
+                input.useDelimiter(" |,|\\.");
+
+
+                makeMessage(reqMessage, message, requestID);
+
+                while (input.hasNext()) {
+                    message.add(input.next());
+                }
+
+                byte[] sendBuffer = new byte[1024];
+                byte[] rcvBuffer = new byte[1024];
+
+                sendBuffer = Marshaller.marshall(reqMessage);
+                
+                //Start transmit/retransmit message 
+                
+                finish = false;
+                timeout = true;
+                while (!finish) {
+
+                    DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, server, port);
+                    count = 5;
+                    while (timeout) {
+                        clientSocket.send(sendPacket);
+
+                        DatagramPacket receivePacket = new DatagramPacket(rcvBuffer, rcvBuffer.length);
+               
+                        //Timmer and loop Here
+                        received = false;
+                        clientSocket.setSoTimeout(10000);  // in ms
+
+                        try {
+                            while (!received) {
+                                clientSocket.receive(receivePacket);
+                                while (receivePacket.getLength() != 0) {
+                                    byte[] data = receivePacket.getData();
+
+                                    // do the unmarshaller
+                                    rcvMessage = Marshaller.unmarshall(data);
+
+                                    received = true;
+                                    timeout = false;
+                                    finish = true;
+                                    //break the loop and print out the result!
+                                }
+                            }
+                        }
+                        catch (SocketTimeoutException e) {
+                            //when timeout print error messageand resend
+
+                            System.out.println("Timeout reached!!! " + e);
+                            System.out.println("Resend Message now");
+                            timeout = true;
+                            count--;
+                        }
+
+                        if (count == 0) {
+                            timeout = false;
+                            finish = true;
                         }
                     }
 
+                    if (count != 0) {
+                        System.out.println("Response Message: ");
+                        if (rcvMessage.getMessageType() == -1) {                       //Error message
+                            ExceptionMessage a = (ExceptionMessage) rcvMessage;
+                            responseString = a.getExceptionMessage();
+                            System.out.println(responseString);
+                        } else if (rcvMessage.getMessageType() == 2) {
+                            ResponseMessage a = (ResponseMessage) rcvMessage;
+                            List<String> responseList = a.getResponseMessages();
+                            responseString = responseList.get(responseList.size() - 1);
 
-                } else {
-                    System.out.println("Server Not Found!");
+                            if (a.isRequestSuccessful()) {
+                                System.out.println("Request Unsuccessful" + responseString);
+                            } else {
+                                System.out.println("Request successful. Booking ID:" + responseString);
+                            }
+                        }
+
+
+                    } else {
+                        System.out.println("Server Not Found!");
+                    }
+
                 }
-
-
-
             }
-         }
         }
-    }
-
-    public UDPClient(String server, int port) throws Exception {
-        this.server = InetAddress.getByName(server);
-        this.port = port;
-
-
-
     }
 
     static void makeMessage(RequestMessage reqMessage, ArrayList<String> message, int requestID) {
@@ -283,7 +243,7 @@ public class UDPClient {
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("days", message.get(2));
-                
+
             }
             case 4: {
                 reqMessage.setAttribute("facility", message.get(1));
@@ -294,25 +254,25 @@ public class UDPClient {
                 reqMessage.setAttribute("bookingID", message.get(1));
             }
         }
-    
+
     }
 
-    public  static void Start (List<String> pFacility) {
-	String lFacility = "";
-	for (int i = 0; i < pFacility.size(); i++) {
-		lFacility = lFacility + pFacility.get(i) +" ";
-	}     
-	  
-	String startMsg = "Welcome to Booking System!\n" +
-		"facility list: " + lFacility + '\n'+
-		"please select the following three options:(by index)\n" +
-		"1. Make a new booking.\n(Indicate facility name, start and end date)\n" +
-		"2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n" +
-                "3. Check avaiablity of a facility.\n(Indicate facility name and days)\n" +
-		"4. Monitor a facility\n(Indicate facility name and interval)\n" +
-                "5. Cancel a booking\n(Indicate the confirmation ID)\n" +
-                "6. Check all facilities' availability\n";
+    public static void Start(List<String> pFacility) {
+        String lFacility = "";
+        for (int i = 0; i < pFacility.size(); i++) {
+            lFacility = lFacility + pFacility.get(i) + " ";
+        }
 
-	System.out.println(startMsg);
-    }    
+        String startMsg = "Welcome to Booking System!\n"
+                + "facility list: " + lFacility + '\n'
+                + "please select the following three options:(by index)\n"
+                + "1. Make a new booking.\n(Indicate facility name, start and end date)\n"
+                + "2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n"
+                + "3. Check avaiablity of a facility.\n(Indicate facility name and days)\n"
+                + "4. Monitor a facility\n(Indicate facility name and interval)\n"
+                + "5. Cancel a booking\n(Indicate the confirmation ID)\n"
+                + "6. Check all facilities' availability\n";
+
+        System.out.println(startMsg);
+    }
 }

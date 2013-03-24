@@ -13,11 +13,6 @@ import java.util.*;
  * @author
  */
 public class UDPClient {
-
-    private static int port;
-    private static InetAddress server;
-    //private static String message; //message cannot be a static field
-    
     
     public static void main(String args[]) throws Exception {
         //we should have a while loop to ask user to input
@@ -31,7 +26,11 @@ public class UDPClient {
          *
          * then pass this message to marshaller
          */
+        int port;
+        InetAddress server = null;
+        
         int requestID = 0;
+        
         boolean Error = false;
         while (true && !Error) {
 
@@ -71,7 +70,7 @@ public class UDPClient {
 
             //byte[] lIPByte = new byte[]{new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
 
-            server.getByName(lIPAddr);
+            server = InetAddress.getByName(lIPAddr);
             System.out.print("Please Enter the Port No.: ");
 
             Scanner portScan = new Scanner(System.in);

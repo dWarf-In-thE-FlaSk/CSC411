@@ -38,8 +38,13 @@ public class BookingData {
         this.aFacilityList = pFacilityList;
     }
     
-    public ArrayList<String> getFacilityList() {
-        return aFacilityList;
+    public Message getFacilityList() {
+        ResponseMessage msg = new ResponseMessage();
+        
+        msg.setRequestSuccessful(true);
+        msg.setResponseMessages(aFacilityList);
+        
+        return msg;
     }
     
     public void setRecord(HashMap<String, ArrayList<BookingEntity>> pRecord) {
@@ -50,16 +55,20 @@ public class BookingData {
         return aRecord;
     }
     
-    public boolean addFacility(String pFacility) {
+    public Message addFacility(String pFacility) {
+        ResponseMessage msg = new ResponseMessage();
+        
         if (!aFacilityList.contains(pFacility)) {
             aFacilityList.add(pFacility);
             aRecord.put(pFacility, new ArrayList<BookingEntity>());
             aObservers.put(pFacility, new ArrayList<Observer>());
-            return true;
+            
+            msg.setRequestSuccessful(true);
         }
         else {
-            return false;
+            msg.setRequestSuccessful(false);
         }
+        return msg;
     }
     
     

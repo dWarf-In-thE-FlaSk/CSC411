@@ -25,6 +25,10 @@ public class RequestMessage implements Message {
     private int request;
     private Map<String, String> attributes;
 
+    public RequestMessage() {
+        attributes = new HashMap<String, String>();
+    }
+    
     @Override
     public List<String> serializeMessageContent() {
         List<String> serializedContent = new ArrayList<String>();

@@ -2,6 +2,7 @@
  */
 package ServerClient;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,8 +65,8 @@ public class Marshaller {
      * marshalled via a method call from the function above.
      * @return List of Strings formatted as in class-header
      */
-    public static Message unmarshall(byte[] data) {
-        String marshalledStr = data.toString();
+    public static Message unmarshall(byte[] data) throws UnsupportedEncodingException {
+        String marshalledStr = new String(data, "UTF-8");
 
         List<String> unMarshalledList = new ArrayList(Arrays.asList(marshalledStr.split("/")));
         

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,8 +30,7 @@ import java.util.List;
  * 3: Check availability
  * Attributes for the RequestMessage:
  * "facility" - the facility name
- * "startDate" - The start date to check from.
- * "endDate" - The end date to check until.
+ * "days" - A list of days to check the availability for. On sending, in the RequestMessage this attribute should be formatted as a String of days with a comma as separator.
  * 
  * 4: Add facility
  * Attributes for the RequestMessage:
@@ -151,9 +151,8 @@ public class BookingServer {
                     case 3: {
                         // Check availabillity
                         String facility = reqMessage.getAttribute("facility");
-                        BookingDate startDate = new BookingDate(reqMessage.getAttribute("startDate"));
-                        BookingDate endDate = new BookingDate(reqMessage.getAttribute("endDate"));
-                        returnMessage = bookingData.checkAvaibility(facility, startDate, endDate);
+                        List<String> days = Arrays.asList(reqMessage.getAttribute("days").split(",")); 
+                        returnMessage = bookingData.checkAvailability(facility, startDate, endDate);
                     }
                     case 4: {
                         // Add facility
@@ -161,10 +160,16 @@ public class BookingServer {
                         returnMessage = bookingData.addFacility(facility);
                     }
                     case 5: {
-                        // Something else 1
+                        // Cancel booking - non-idempotent
+                        String bookingID = reqMessage.getAttribute("bookingID");
+                        returnMessage.bookingData.cancelBooking(bookingID);
+                        if (returnMessageIsSuccessful(returnMessage)) {
+                            notifyObservers(bookingData.getFacilityByID(bookingID), bookingData);
+                        }
                     }
                     case 6: {
-                        // Something else 2
+                        // Check all facilites - idempotent
+                        returnMessage = bookingData.checkAll();
                     }
                     case 7: {
                         // Register to observer
@@ -192,7 +197,7 @@ public class BookingServer {
         // Get the list of observers for the facility being handled
         List<Observer> observers = bookingData.getObservers(facility);
         // Get the current availability for the facility
-        Message observerMessage = bookingData.getAvaibility(facility);
+        Message observerMessage = bookingData.getAvailabilitys(facility);
         // Set a requestID, it's irrelevant in this case so just put it to 0
         observerMessage.setRequestID(0);
         // Marshall the data being sent to the observer.

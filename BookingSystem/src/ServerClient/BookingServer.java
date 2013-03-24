@@ -165,17 +165,17 @@ public class BookingServer {
                         // Check availabillity
                         String facility = reqMessage.getAttribute("facility");
                         List<String> days = Arrays.asList(reqMessage.getAttribute("days").split(",")); 
-                        returnMessage = bookingData.checkAvailability(facility, startDate, endDate);
+                        returnMessage = bookingData.checkAvailability(facility, days);
                     }
                     case 4: {
                         // Add facility
                         String facility = reqMessage.getAttribute("facility");
-                        returnMessage = bookingData.addFacility(facility);
+                        // returnMessage = bookingData.addFacility(facility);
                     }
                     case 5: {
                         // Cancel booking - non-idempotent
                         String bookingID = reqMessage.getAttribute("bookingID");
-                        returnMessage.bookingData.cancelBooking(bookingID);
+                        returnMessage = bookingData.cancelBooking(bookingID);
                         if (returnMessageIsSuccessful(returnMessage)) {
                             notifyObservers(bookingData.getFacilityByID(bookingID), bookingData);
                         }

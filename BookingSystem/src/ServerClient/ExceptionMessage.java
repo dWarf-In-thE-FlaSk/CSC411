@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package ServerClient;
 
@@ -8,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author rikardandersson
+ * This type of Message will be sent when something goes wrong in the
+ * communication between the client and the server. For instance if an exception
+ * is thrown at server side as a result of a request from the client, it will 
+ * return an ExceptionMessage.
+ * 
+ * @author Rikard Andersson
  */
 public class ExceptionMessage implements Message {
     

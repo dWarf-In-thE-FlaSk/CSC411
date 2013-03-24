@@ -91,4 +91,35 @@ public class RequestMessage implements Message {
         attributes.put(key, value);
     }
     
+    public boolean equals(Object o) {
+        if (o == null) {
+            // If the object is null they should not be considered equal
+            return false;
+        } else if (!(o instanceof RequestMessage)) {
+            // If the object is not of the same class as this object then
+            // it's not equal and we cannot continue the operations in else.
+            return false;
+        } else {
+            // Type casting the object since we know it's the same type
+            RequestMessage rm = (RequestMessage) o;
+            // Se if the containers in the ResponseMessages matches. If the do
+            // they are the same.
+            return ((this.requestID == rm.getRequestID()) &&
+                    (this.request == rm.getRequest()) &&
+                    this.attributes.equals(rm.attributes));
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 1;
+
+        hash += (this.requestID + 1) * 89;
+        hash += (this.request + 3) * 13;  
+        
+        if (this.attributes != null) {
+            hash += this.attributes.hashCode() * 89;
+        }
+        return hash;
+    }
 }

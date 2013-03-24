@@ -21,10 +21,6 @@ import java.util.HashMap;
  * thread the ServerLog will only store the latest request/response from/to a
  * specific IP address and port. This can however be extended.
  * 
- * @TODO: Decided if we should only apply this technique to non-idempotent 
- * operations.
- * @TODO: Delete previous operations
- * 
  * @author Rikard Andersson
  */
 public class ServerLog {

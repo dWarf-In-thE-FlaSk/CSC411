@@ -29,7 +29,7 @@ public class UDPClient {
         int port;
         InetAddress server = null;
         
-        int requestID = 0;
+        int requestID = 10;
         
         boolean Error = false;
         while (true && !Error) {
@@ -105,7 +105,7 @@ public class UDPClient {
                     catch (SocketTimeoutException e) {         //when timeout print error messageand resend
                         
                         System.out.println("Timeout reached!!! " + e);
-                        System.out.println("Resend Message now");
+                        System.out.println("Resend Request Message now");
                         timeout = true;
                         count--;
                     }

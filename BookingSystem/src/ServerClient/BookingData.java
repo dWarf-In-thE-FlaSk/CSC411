@@ -38,8 +38,13 @@ public class BookingData {
         this.aFacilityList = pFacilityList;
     }
     
-    public ArrayList<String> getFacilityList() {
-        return aFacilityList;
+    public Message getFacilityList() {
+        ResponseMessage msg = new ResponseMessage();
+        
+        msg.setRequestSuccessful(true);
+        msg.setResponseMessages(aFacilityList);
+        
+        return msg;
     }
     
     public void setRecord(HashMap<String, ArrayList<BookingEntity>> pRecord) {

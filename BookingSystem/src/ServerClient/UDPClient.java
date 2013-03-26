@@ -36,7 +36,7 @@ public class UDPClient {
 
             requestID++;
 
-            ArrayList<String> message = new ArrayList<String>();
+            List<String> message;
             List<String> facilityList = null;
 
             Message rcvMessage = null;
@@ -131,18 +131,26 @@ public class UDPClient {
 
                 Start(facilityList);
                 
-                
+                /*
                 Scanner input = new Scanner(System.in);
 
 
                 input.useDelimiter(" |,|\\.");
 
-
-               
-
                 while (input.hasNext()) {
                     message.add(input.next());
                 }
+                */
+                
+                Scanner input = new Scanner(System.in);
+		
+		String temp = input.next();
+		
+		input.close();
+		
+		String[] messages = temp.split(",|\\.");
+		
+		message = Arrays.asList(messages);
                 
                 makeMessage(reqMessage, message, requestID);
 
@@ -227,7 +235,7 @@ public class UDPClient {
         }
     }
 
-    static void makeMessage(RequestMessage reqMessage, ArrayList<String> message, int requestID) {
+    static void makeMessage(RequestMessage reqMessage, List<String> message, int requestID) {
 
         reqMessage.setRequestID(requestID);
         reqMessage.setRequest(new Integer(message.get(0)));

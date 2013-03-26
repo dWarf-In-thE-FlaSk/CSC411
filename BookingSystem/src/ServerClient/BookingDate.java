@@ -8,7 +8,7 @@ package ServerClient;
  *
  * @author Lance
  */
-public class BookingDate {
+public class BookingDate implements Cloneable{
     private String aDate;
 
     public BookingDate() {
@@ -30,7 +30,7 @@ public class BookingDate {
     
     public void setDate(Day pDay, int pHour, int pMinute) {
         this.aDate = pDay.toString() + new Integer(pHour).toString() 
-                + new Integer(pMinute).toString();
+                    + new Integer(pMinute).toString();
     }
         
     
@@ -41,10 +41,11 @@ public class BookingDate {
     public String getDate() {
         return aDate;
     }
+ 
     
     @Override
     public BookingDate clone() throws CloneNotSupportedException {
-        return (BookingDate)this.clone();
+        return (BookingDate)super.clone();
     }
     
     public Day getDay() {

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class TestDatabase {
  
-    public static void main(String args[]) {
+    public static void main(String args[]) throws CloneNotSupportedException {
         
         BookingData bookingData = new BookingData();
         
@@ -26,6 +26,8 @@ public class TestDatabase {
         testGetFacilityName(bookingData);
         
         testRegister(bookingData);
+        
+        testChanging(bookingData);
     }
     
     public static void testGetFacilityName(BookingData bd) {
@@ -70,17 +72,20 @@ public class TestDatabase {
     }    
     
     
-    public static void testChanging (BookingData bd) {
+    public static void testChanging (BookingData bd) throws CloneNotSupportedException {
         ResponseMessage msg = new ResponseMessage();
         
         BookingDate start = new BookingDate("MONDAY/8/00");
         BookingDate end = new BookingDate("MONDAY/10/00");
                 
-        msg = (ResponseMessage) bd.changeBooking("LTA#0", start, end);
+        msg = (ResponseMessage) bd.changeBooking("LTA#0", "advance", 10);
         
         List<String> list = msg.getResponseMessages();
         for (String aName: list) {
             System.out.println(aName);
         }
+        
+        
+    }   
     
 }

@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * This type of Message is sent from the client to the server and contains a
  * mapping of all the attributes required for the server to execute the command.
  * The client have to append the correct attributes, correctly named when
  * constructing this message in order for the server to be able to construct a
  * correct ResponseMessage.
+ * 
+ * @see Message
  * 
  * @author Rikard Andersson
  */
@@ -23,12 +24,29 @@ public class RequestMessage implements Message {
     private static int messageType = 1;
     private int requestID;
     private int request;
+    private boolean usesServerLog;
     private Map<String, String> attributes;
     
+    /**
+     * This serialized part of the message will be structured in this order.
+     * 1. request       -   the int indicating which request is to be carried out
+     * 2. usesServerLog -   A boolean that decides whether or not the serverlog
+     *                      (and hence the at most once invocation) will be used
+     *                      when executing the request on serverside.
+     * 3. attributes    -   A map of all the attributes for the command. Must be
+     *                      input with the correct key in order for the server
+     *                      to be able to fetch them when executing the request.
+     *
+     * @return A list with the flattened version of the part of the message that
+     * is unique to this implementation of Message. The parts generic to all
+     * Messages (i.e. messageType and requestID) is handeled by the Marshaller.
+     */
     @Override
     public List<String> serializeMessageContent() {
         List<String> serializedContent = new ArrayList<String>();
+        
         serializedContent.add(String.valueOf(this.getRequest()));
+        serializedContent.add(String.valueOf(this.isUsesServerLog()));
         
         for (Map.Entry<String, String> entry : getAttributes().entrySet()) {
             serializedContent.add(entry.getKey());
@@ -37,16 +55,24 @@ public class RequestMessage implements Message {
         return serializedContent;
     }
     
+    /**
+     * Does the opposite of the above method. The method builds the object from
+     * a flattened version of it. This flattened version is represented as a 
+     * list of Strings.
+     * 
+     * @param serializedMessageContent 
+     */
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
         
         this.setRequest(Integer.parseInt(serializedMessageContent.get(0)));
+        this.setUsesServerLog(Boolean.parseBoolean(serializedMessageContent.get(1)));
                 
         if (attributes == null) {
             attributes = new HashMap<String, String>();
         }
         
-        Iterator<String> iter = serializedMessageContent.subList(1, serializedMessageContent.size()).iterator();
+        Iterator<String> iter = serializedMessageContent.subList(2, serializedMessageContent.size()).iterator();
         while(iter.hasNext()) {
             String key = iter.next();
             if(iter.hasNext()) {
@@ -55,6 +81,14 @@ public class RequestMessage implements Message {
         }
     }   
 
+    public boolean isUsesServerLog() {
+        return usesServerLog;
+    }
+
+    public void setUsesServerLog(boolean usesServerLog) {
+        this.usesServerLog = usesServerLog;
+    }
+    
     public void setRequest(int request) {
         this.request = request;
     }
@@ -96,6 +130,7 @@ public class RequestMessage implements Message {
         return attributes;
     }
     
+    @Override
     public boolean equals(Object o) {
         if (o == null) {
             // If the object is null they should not be considered equal

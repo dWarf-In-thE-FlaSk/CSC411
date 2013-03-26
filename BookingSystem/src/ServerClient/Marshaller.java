@@ -83,14 +83,8 @@ public class Marshaller {
         
         List<String> remaining = unMarshalledList.subList(2, unMarshalledList.size());
         
-        int lastIndex = remaining.size() - 1;
-        
-        String newLast = remaining.get(lastIndex).trim();
-        
-        remaining.set(lastIndex, newLast);
-        
-        //System.out.println("The request is printed here: " + Integer.parseInt(remaining.get(0)));
-        //System.out.println(remaining.get(lastIndex).startsWith("end"));
+        // Removing the last element with the extra data on it.
+        remaining.remove(remaining.size() - 1);
         
         unMarshalledMessage.unserializeAndSetMessageContent(remaining);
         

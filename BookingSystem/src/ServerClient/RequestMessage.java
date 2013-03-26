@@ -25,7 +25,56 @@ public class RequestMessage implements Message {
     private int requestID;
     private int request;
     private boolean usesServerLog;
-    private Map<String, String> attributes;
+    private Map<String, String> attributes;  
+
+    public boolean isUsesServerLog() {
+        return usesServerLog;
+    }
+
+    public void setUsesServerLog(boolean usesServerLog) {
+        this.usesServerLog = usesServerLog;
+    }
+    
+    public void setRequest(int request) {
+        this.request = request;
+    }
+
+    public int getRequest() {
+        return this.request;
+    }
+
+    @Override
+    public int getMessageType() {
+        return this.messageType;
+    }
+
+    @Override
+    public int getRequestID() {
+        return this.requestID;
+    }
+    
+    @Override
+    public void setRequestID(int requestID) {
+        this.requestID = requestID;
+    }
+    
+    public String getAttribute(String key) {
+        return attributes.get(key);
+    }
+    
+    public void setAttribute(String key, String value) {
+        if (attributes == null) {
+            attributes = new HashMap<String, String>();
+        }
+        attributes.put(key, value);
+    }
+    
+    private Map<String, String> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<String, String>();
+        }
+        return attributes;
+    }
     
     /**
      * This serialized part of the message will be structured in this order.
@@ -79,56 +128,7 @@ public class RequestMessage implements Message {
                 this.setAttribute(key, iter.next());
             }
         }
-    }   
-
-    public boolean isUsesServerLog() {
-        return usesServerLog;
-    }
-
-    public void setUsesServerLog(boolean usesServerLog) {
-        this.usesServerLog = usesServerLog;
-    }
-    
-    public void setRequest(int request) {
-        this.request = request;
-    }
-
-    public int getRequest() {
-        return this.request;
-    }
-
-    @Override
-    public int getMessageType() {
-        return this.messageType;
-    }
-
-    @Override
-    public int getRequestID() {
-        return this.requestID;
-    }
-    
-    @Override
-    public void setRequestID(int requestID) {
-        this.requestID = requestID;
-    }
-    
-    public String getAttribute(String key) {
-        return attributes.get(key);
-    }
-    
-    public void setAttribute(String key, String value) {
-        if (attributes == null) {
-            attributes = new HashMap<String, String>();
-        }
-        attributes.put(key, value);
-    }
-    
-    private Map<String, String> getAttributes() {
-        if (attributes == null) {
-            attributes = new HashMap<String, String>();
-        }
-        return attributes;
-    }
+    } 
     
     @Override
     public boolean equals(Object o) {

@@ -172,11 +172,11 @@ public class BookingServer {
                         // Change booking
                         String bookingID = reqMessage.getAttribute("bookingID");
                         String changeIndicator = reqMessage.getAttribute("changeIndicator");
-                        BookingDate changeDate = new BookingDate(reqMessage.getAttribute("changeDate")); // What is this attribute?
+                        int hours = Integer.parseInt(reqMessage.getAttribute("hours")); // What is this attribute?
                         System.out.println("Changing booking with ID " + bookingID +
                                 " with indicator " + changeIndicator +
-                                " to date " + changeDate);
-                        returnMessage = bookingData.changeBooking(bookingID, changeIndicator, changeDate);
+                                " with number of hours " + hours);
+                        returnMessage = bookingData.changeBooking(bookingID, changeIndicator, hours);
                         
                         // If the change was successfull we want to notify the observers.
                         if (returnMessageIsSuccessful(returnMessage)) {

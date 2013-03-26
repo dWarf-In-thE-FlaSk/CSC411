@@ -11,6 +11,8 @@ import java.util.List;
  * is thrown at server side as a result of a request from the client, it will 
  * return an ExceptionMessage.
  * 
+ * @see Message
+ * 
  * @author Rikard Andersson
  */
 public class ExceptionMessage implements Message {
@@ -51,6 +53,17 @@ public class ExceptionMessage implements Message {
         this.requestID = requestID;
     }
     
+    /**
+     * This serialized part of the message will be structured in this order.
+     * 1. exceptionType -   A String indicating what kind of exception caused
+     *                      this message and where it was caused.
+     * 2. exceptionMessage - A String where a message to better understand what
+     *                      went wrong.
+     *
+     * @return A list with the flattened version of the part of the message that
+     * is unique to this implementation of Message. The parts generic to all
+     * Messages (i.e. messageType and requestID) is handeled by the Marshaller.
+     */
     @Override
     public List<String> serializeMessageContent() {
         List<String> serializedContent = new ArrayList<String>();
@@ -58,12 +71,21 @@ public class ExceptionMessage implements Message {
         serializedContent.add(exceptionMessage);
         return serializedContent;
     }
+    
+    /**
+     * Does the opposite of the above method. The method builds the object from
+     * a flattened version of it. This flattened version is represented as a 
+     * list of Strings.
+     * 
+     * @param serializedMessageContent 
+     */
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
         this.setExceptionType(serializedMessageContent.get(0));
         this.setExceptionMessage(serializedMessageContent.get(1));
     }
     
+    @Override
     public boolean equals(Object o) {
         if (o == null) {
             // If the object is null they should not be considered equal

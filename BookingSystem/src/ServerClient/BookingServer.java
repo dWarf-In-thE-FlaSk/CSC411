@@ -166,6 +166,7 @@ public class BookingServer {
                         if (returnMessageIsSuccessful(returnMessage)) {
                             notifyObservers(facility, bookingData);
                         }
+                        break;
                     }
                     case 2: {
                         // Change booking
@@ -181,6 +182,7 @@ public class BookingServer {
                         if (returnMessageIsSuccessful(returnMessage)) {
                             notifyObservers(bookingData.getFacilityByID(bookingID), bookingData); // Use a method in BookingData to get the facility based on bookingID
                         }
+                        break;
                     }
                     case 3: {
                         // Check availabillity
@@ -189,6 +191,7 @@ public class BookingServer {
                         System.out.println("Checking availability for facility " + facility +
                         " for the days: " + days.toString());
                         returnMessage = bookingData.checkAvailability(facility, days);
+                        break;
                     }
                     case 4: {
                         // Register to observer
@@ -196,6 +199,7 @@ public class BookingServer {
                         int interval = Integer.parseInt(reqMessage.getAttribute("interval"));
                         System.out.println("Registering an observer for facility " +  facility);
                         returnMessage = bookingData.addObserver(facility, requester, interval);
+                        break;
                     }
                     case 5: {
                         // Cancel booking - non-idempotent
@@ -205,25 +209,30 @@ public class BookingServer {
                         if (returnMessageIsSuccessful(returnMessage)) {
                             notifyObservers(bookingData.getFacilityByID(bookingID), bookingData);
                         }
+                        break;
                     }
                     case 6: {
                         // Check all facilites - idempotent
                         System.out.println("Checking all the facilities for bookings");
                         returnMessage = bookingData.checkAll();
+                        break;
                     }
                     case 7: {
                         // Add facility
                         String facility = reqMessage.getAttribute("facility");
                         System.out.println("Adding a facility with name " + facility);
                         returnMessage = bookingData.addFacility(facility);
+                        break;
                     }
                     case 8: {
                         // Get the available facilities
                         System.out.println("Getting the list of facilities.");
                         returnMessage = bookingData.getFacilityList();
+                        break;
                     }
                     default: {
                         returnMessage = getServerExceptionMessage("Not a valid request type");
+                        break;
                     }
                 }
             } catch (Exception e) {

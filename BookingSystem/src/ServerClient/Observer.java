@@ -46,5 +46,9 @@ public class Observer {
         this.aIPAddr = aIPAddr;
     }
 
+    @Override
+    public String toString() {
+        return (aFacility + " " + aIPAddr.toString());
+    }
     
 }

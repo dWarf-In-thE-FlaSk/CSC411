@@ -269,7 +269,7 @@ public class BookingData {
         
         for (BookingEntity lEntity: bookings) {
             if (pDays.contains(lEntity.getStartDate().getDay().toString())) {
-                info = info + '\n' + "From" + lEntity.getStartDate() + "to" + lEntity.getEndDate();
+                info = info + '\n' + "From " + lEntity.getStartDate().toString() + " to " + lEntity.getEndDate().toString();
             }
         }
         
@@ -350,7 +350,7 @@ public class BookingData {
         ArrayList<BookingEntity> bookings = this.aRecord.get(pFacility);
         
         for (BookingEntity lEntity: bookings) {
-                info = info + '\n' + "From" + lEntity.getStartDate() + "to" + lEntity.getEndDate();
+                info = info + '\n' + "From " + lEntity.getStartDate().toString() + " to " + lEntity.getEndDate().toString();
         }
         
         ResponseMessage avaibility = new ResponseMessage();
@@ -358,5 +358,5 @@ public class BookingData {
         avaibility.addResponseMessage(info);
         
         return avaibility;
-    } 
+    }
 }

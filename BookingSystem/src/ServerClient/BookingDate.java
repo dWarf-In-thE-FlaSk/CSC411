@@ -96,6 +96,11 @@ public class BookingDate implements Cloneable{
         return result;
     }
     
+    @Override
+    public String toString() {
+        return this.aDate;
+    }
+    
     public boolean isAfter(BookingDate pDate) {
                
         return pDate.isBefore(this);

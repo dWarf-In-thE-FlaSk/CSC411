@@ -146,7 +146,12 @@ public class UDPClient {
 >>>>>>> nn
                 while (input.hasNext()) {
                     
+                    System.out.println(i);
+                    
                     message.add(input.next());
+                    
+                    System.out.println(i);
+                   
                     
                     System.out.println(message.get(i));
                     i++;

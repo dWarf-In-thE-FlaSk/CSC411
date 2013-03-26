@@ -90,7 +90,7 @@ public class UDPClient {
                     try {
                         while (!received) {
                             clientSocket.receive(receiveFacility);
-                            while (receiveFacility.getLength() != 0) {
+                            while (receiveFacility.getLength() != 0&&!finish) {
                                 byte[] data = receiveFacility.getData();
 
                                 // do the unmarshaller
@@ -122,6 +122,7 @@ public class UDPClient {
                     
                     ResponseMessage fac = (ResponseMessage) rcvMessage;
                     facilityList = fac.getResponseMessages();
+                    
                 }
             }
 
@@ -129,6 +130,8 @@ public class UDPClient {
             if (!Error) {
 
                 Start(facilityList);
+                
+                
                 Scanner input = new Scanner(System.in);
 
 
@@ -166,7 +169,7 @@ public class UDPClient {
                         try {
                             while (!received) {
                                 clientSocket.receive(receivePacket);
-                                while (receivePacket.getLength() != 0) {
+                                while (receivePacket.getLength() != 0&&!finish) {
                                     byte[] data = receivePacket.getData();
 
                                     // do the unmarshaller
@@ -265,6 +268,7 @@ public class UDPClient {
 
     public static void Start(List<String> pFacility) {
         String lFacility = "";
+        
         for (int i = 0; i < pFacility.size(); i++) {
             lFacility = lFacility + pFacility.get(i) + " ";
         }

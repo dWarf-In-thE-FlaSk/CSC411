@@ -260,10 +260,12 @@ public class BookingServer {
                     break;
                 }
             }
-        } catch (Exception e) {
-            returnMessage = getServerExceptionMessage("An exception was thrown in the server: " + e.getMessage());
         
-        } finally {
+        } catch (Exception e) { // If an exception is caught we print the problem and return a message to the client.
+            returnMessage = getServerExceptionMessage("An exception was thrown in the server: " + e.getMessage());
+            System.out.println(e.getMessage());
+        
+        } finally { // No matter what happens we want to return the returnMessage.
             
             if (returnMessageIsSuccessful(returnMessage)) {
                 System.out.println("The request was successful!");

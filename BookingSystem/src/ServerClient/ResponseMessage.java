@@ -20,22 +20,6 @@ public class ResponseMessage implements Message {
     private boolean requestSuccessful;
     private List<String> responseMessages;
     
-    @Override
-    public List<String> serializeMessageContent() {
-        List<String> serializedContent = new ArrayList<String>();
-
-        serializedContent.add(String.valueOf(requestSuccessful));
-        serializedContent.addAll(this.getResponseMessages());
-        
-        return serializedContent;
-    }
-
-    @Override
-    public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
-        this.setRequestSuccessful(Boolean.parseBoolean(serializedMessageContent.get(0)));
-        this.setResponseMessages(serializedMessageContent.subList(1, serializedMessageContent.size()));
-    }
-    
     public boolean isRequestSuccessful() {
         return requestSuccessful;
     }
@@ -76,7 +60,43 @@ public class ResponseMessage implements Message {
         }
         responseMessages.add(message);
     }
+
+    /**
+     * This serialized part of the message will be structured in this order.
+     * 1. requestSuccessful -   A boolean indicating whether or not the response
+     *                          is the result of a successful request.
+     * 2. responseMessages  -   A list of Strings that represents the messages
+     *                          returned to the client as a result of the
+     *                          request sent.
+     *
+     * @return A list with the flattened version of the part of the message that
+     * is unique to this implementation of Message. The parts generic to all
+     * Messages (i.e. messageType and requestID) is handeled by the Marshaller.
+     */
+    @Override
+    public List<String> serializeMessageContent() {
+        List<String> serializedContent = new ArrayList<String>();
+
+        serializedContent.add(String.valueOf(requestSuccessful));
+        serializedContent.addAll(this.getResponseMessages());
+        
+        return serializedContent;
+    }
     
+    /**
+     * Does the opposite of the above method. The method builds the object from
+     * a flattened version of it. This flattened version is represented as a 
+     * list of Strings.
+     * 
+     * @param serializedMessageContent 
+     */
+    @Override
+    public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
+        this.setRequestSuccessful(Boolean.parseBoolean(serializedMessageContent.get(0)));
+        this.setResponseMessages(serializedMessageContent.subList(1, serializedMessageContent.size()));
+    }
+    
+    @Override
     public boolean equals(Object o) {
         if (o == null) {
             // If the object is null they should not be considered equal

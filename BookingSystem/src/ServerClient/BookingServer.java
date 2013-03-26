@@ -330,7 +330,7 @@ public class BookingServer {
      * Private method to get a standard "serverException" ExceptionMessage
      */
     private static ExceptionMessage getServerExceptionMessage(String message) {
-        System.out.println("Returning a server exception");
+        System.out.println("Returning a server exception with message:");
         System.out.println(message);
         ExceptionMessage exMessage = new ExceptionMessage();
         exMessage.setExceptionMessage(message);

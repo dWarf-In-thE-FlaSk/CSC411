@@ -234,25 +234,30 @@ public class UDPClient {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("startDate", message.get(2));
                 reqMessage.setAttribute("endDate", message.get(3));
+                break;
 
             }
             case 2: {
                 reqMessage.setAttribute("bookingID", message.get(1));
                 reqMessage.setAttribute("changeIndicator", message.get(2));
                 reqMessage.setAttribute("changeDate", message.get(3));
+                break;
             }
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("days", message.get(2));
+                break;
 
             }
             case 4: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("interval", message.get(2));
+                break;
 
             }
             case 5: {
                 reqMessage.setAttribute("bookingID", message.get(1));
+                break;
             }
         }
 

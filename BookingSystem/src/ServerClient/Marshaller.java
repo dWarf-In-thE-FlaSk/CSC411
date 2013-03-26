@@ -51,7 +51,7 @@ public class Marshaller {
             
             marshalledStr.append(listIterator.next());
             
-            // Appending the delimiter "/" between each object
+            // Appending the delimiter "#" between each object
             if(listIterator.hasNext()) {
                 marshalledStr.append("#");
             }

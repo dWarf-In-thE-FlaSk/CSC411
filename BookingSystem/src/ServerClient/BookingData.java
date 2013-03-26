@@ -133,7 +133,7 @@ public class BookingData {
      * @return a response message with facility name
      * @throws CloneNotSupportedException 
      */
-    public Message changeBooking(String pID, String indicator, BookingDate pDate) throws CloneNotSupportedException {
+    public Message changeBooking(String pID, String indicator, int pHour) throws CloneNotSupportedException {
         ResponseMessage msg = new ResponseMessage();
         ExceptionMessage msgEx = new ExceptionMessage();
         

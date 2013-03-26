@@ -138,11 +138,13 @@ public class UDPClient {
                 input.useDelimiter(" |,|\\.");
 
 
-                makeMessage(reqMessage, message, requestID);
+               
 
                 while (input.hasNext()) {
                     message.add(input.next());
                 }
+                
+                makeMessage(reqMessage, message, requestID);
 
                 byte[] sendBuffer = new byte[1024];
                 byte[] rcvBuffer = new byte[1024];

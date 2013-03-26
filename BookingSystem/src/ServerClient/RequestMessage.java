@@ -146,6 +146,7 @@ public class RequestMessage implements Message {
             // they are the same.
             return ((this.requestID == rm.getRequestID()) &&
                     (this.request == rm.getRequest()) &&
+                    (this.usesServerLog = rm.isUsesServerLog()) &&
                     this.attributes.equals(rm.attributes));
         }
     }
@@ -155,7 +156,11 @@ public class RequestMessage implements Message {
         int hash = 1;
 
         hash += (this.requestID + 1) * 89;
-        hash += (this.request + 3) * 13;  
+        hash += (this.request + 3) * 13;
+        
+        if (this.usesServerLog) {
+            hash += 13;
+        }
         
         if (this.attributes != null) {
             hash += this.attributes.hashCode() * 89;

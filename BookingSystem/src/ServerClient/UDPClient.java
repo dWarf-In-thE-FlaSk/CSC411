@@ -32,6 +32,8 @@ public class UDPClient {
         int requestID = 10;
         
         boolean Error = false;
+        
+        
         while (true && !Error) {
 
             requestID++;
@@ -49,7 +51,7 @@ public class UDPClient {
             byte[] reqFac = new byte[1024];
             byte[] rcvFaciity = new byte[1024];
             boolean finish = false;
-
+            boolean end=false;
             DatagramSocket clientSocket = new DatagramSocket();
             int count;
             boolean received = false;
@@ -59,7 +61,7 @@ public class UDPClient {
             requestID++;
             reqFac = Marshaller.marshall(reqFacility);
 
-
+            
             System.out.print("Please Enter the IP Address: ");
             Scanner IPScan = new Scanner(System.in);
 
@@ -126,8 +128,10 @@ public class UDPClient {
                 }
             }
 
-
-            if (!Error) {
+            while (!end){
+               
+            
+            if (!Error ) {
 
                 Start(facilityList);
                 
@@ -158,11 +162,12 @@ public class UDPClient {
                 }
                 */
                 
+                
                 Scanner input = new Scanner(System.in);
 		
 		String temp = input.next();
 		
-		input.close();
+		//input.close();
 		
 		String[] messages = temp.split(",|\\.");
 		
@@ -224,7 +229,7 @@ public class UDPClient {
                     }
 
                     if (count != 0) {
-                        System.out.println("Response Message: ");
+                        System.out.print("Response Message: ");
                         if (rcvMessage.getMessageType() == -1) {                       //Error message
                             ExceptionMessage a = (ExceptionMessage) rcvMessage;
                             responseString = a.getExceptionMessage();
@@ -249,6 +254,7 @@ public class UDPClient {
                 }
             }
         }
+       }
     }
 
     static void makeMessage(RequestMessage reqMessage, List<String> message, int requestID) {

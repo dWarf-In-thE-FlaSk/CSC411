@@ -88,12 +88,15 @@ public class BookingServer {
         int responseLossFreq = 6;
         
         while(true) {
+            // For the message loss
+            iterations++;
+           
             // We begin listening for requests, this will wait until data is received.
             System.out.println("Listening for incoming requests");
             dgSocket.receive(dgPacket);
             
             // Check if we should simulate requst loss
-            if((iterations % requestLossFreq) == 0) { // We don't simulate a request lost on the way to the server.
+            if(iterations % requestLossFreq != 0) { // We don't simulate a request lost on the way to the server.
                 data = dgPacket.getData();
 
                 // Unmarshalling methods. See static Marshaller methods for reference
@@ -143,7 +146,7 @@ public class BookingServer {
                 
                 // Now we want to return the response to wherever it came from.
                 // First see if we should simulate a response loss.
-                if (iterations % responseLossFreq == 0) {
+                if (iterations % responseLossFreq != 0) {
                     // If not, send the response
                     data = Marshaller.marshall(returnMessage);
                     dgPacket.setData(data);
@@ -157,8 +160,6 @@ public class BookingServer {
             } else { // We simulate a request being lost on the way to the server.
                 System.out.println("Simulating a lost request");
             }
-            // For the message loss
-            iterations++;
         }
     }
     

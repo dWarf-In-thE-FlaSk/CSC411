@@ -9,5 +9,5 @@ package ServerClient;
  * @author Lance
  */
 public enum Day {
-    MONDDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
 }

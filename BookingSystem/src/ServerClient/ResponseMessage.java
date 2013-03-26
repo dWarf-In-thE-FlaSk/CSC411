@@ -11,13 +11,17 @@ import java.util.List;
  * thrown at the server side in which case an ExceptionMessage will be passed
  * instead.
  * 
+ * @see Message
+ * 
  * @author Rikard Andersson
  */
 public class ResponseMessage implements Message {
     
     private static int messageType = 2;
     private int requestID;
+    // Indicator if this response is a result of a successful requst execution.
     private boolean requestSuccessful;
+    // A list of the messages the server sends back as a result of a request.
     private List<String> responseMessages;
     
     public boolean isRequestSuccessful() {

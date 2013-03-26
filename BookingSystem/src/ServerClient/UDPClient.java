@@ -137,8 +137,19 @@ public class UDPClient {
 
                 input.useDelimiter(" |,|\\.");
 
+<<<<<<< HEAD
+=======
+
+               int i=0;
+               
+               
+>>>>>>> nn
                 while (input.hasNext()) {
+                    
                     message.add(input.next());
+                    
+                    System.out.println(message.get(i));
+                    i++;
                 }
                 */
                 
@@ -239,6 +250,7 @@ public class UDPClient {
 
         reqMessage.setRequestID(requestID);
         reqMessage.setRequest(new Integer(message.get(0)));
+        
 
         switch (reqMessage.getRequest()) {
 
@@ -247,6 +259,7 @@ public class UDPClient {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("startDate", message.get(2));
                 reqMessage.setAttribute("endDate", message.get(3));
+                reqMessage.setUsesServerLog(new Boolean(message.get(4)));
                 break;
 
             }
@@ -254,22 +267,26 @@ public class UDPClient {
                 reqMessage.setAttribute("bookingID", message.get(1));
                 reqMessage.setAttribute("changeIndicator", message.get(2));
                 reqMessage.setAttribute("changeDate", message.get(3));
+                reqMessage.setUsesServerLog(new Boolean(message.get(4)));
                 break;
             }
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("days", message.get(2));
+                reqMessage.setUsesServerLog(new Boolean(message.get(3)));
                 break;
 
             }
             case 4: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("interval", message.get(2));
+                reqMessage.setUsesServerLog(new Boolean(message.get(3)));
                 break;
 
             }
             case 5: {
                 reqMessage.setAttribute("bookingID", message.get(1));
+                reqMessage.setUsesServerLog(new Boolean(message.get(2)));
                 break;
             }
         }

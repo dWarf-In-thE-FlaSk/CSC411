@@ -160,9 +160,9 @@ public class BookingData {
             
         }
         
-        Integer day = pDate.getDay().ordinal();
-        Integer hour = pDate.getHour();
-        Integer minute = pDate.getMinute();
+        int day = 0;
+        int hour = pHour;
+        int minute = 0;
         
         BookingDate lStartDate;
         BookingDate lEndDate;

@@ -90,7 +90,7 @@ public class UDPClient {
                     try {
                         while (!received) {
                             clientSocket.receive(receiveFacility);
-                            while (receiveFacility.getLength() != 0) {
+                            while (receiveFacility.getLength() != 0&&!finish) {
                                 byte[] data = receiveFacility.getData();
 
                                 // do the unmarshaller
@@ -122,6 +122,7 @@ public class UDPClient {
                     
                     ResponseMessage fac = (ResponseMessage) rcvMessage;
                     facilityList = fac.getResponseMessages();
+                    
                 }
             }
 
@@ -129,17 +130,21 @@ public class UDPClient {
             if (!Error) {
 
                 Start(facilityList);
+                
+                
                 Scanner input = new Scanner(System.in);
 
 
                 input.useDelimiter(" |,|\\.");
 
 
-                makeMessage(reqMessage, message, requestID);
+               
 
                 while (input.hasNext()) {
                     message.add(input.next());
                 }
+                
+                makeMessage(reqMessage, message, requestID);
 
                 byte[] sendBuffer = new byte[1024];
                 byte[] rcvBuffer = new byte[1024];
@@ -166,7 +171,7 @@ public class UDPClient {
                         try {
                             while (!received) {
                                 clientSocket.receive(receivePacket);
-                                while (receivePacket.getLength() != 0) {
+                                while (receivePacket.getLength() != 0&&!finish) {
                                     byte[] data = receivePacket.getData();
 
                                     // do the unmarshaller
@@ -234,25 +239,30 @@ public class UDPClient {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("startDate", message.get(2));
                 reqMessage.setAttribute("endDate", message.get(3));
+                break;
 
             }
             case 2: {
                 reqMessage.setAttribute("bookingID", message.get(1));
                 reqMessage.setAttribute("changeIndicator", message.get(2));
                 reqMessage.setAttribute("changeDate", message.get(3));
+                break;
             }
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("days", message.get(2));
+                break;
 
             }
             case 4: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("interval", message.get(2));
+                break;
 
             }
             case 5: {
                 reqMessage.setAttribute("bookingID", message.get(1));
+                break;
             }
         }
 
@@ -260,6 +270,7 @@ public class UDPClient {
 
     public static void Start(List<String> pFacility) {
         String lFacility = "";
+        
         for (int i = 0; i < pFacility.size(); i++) {
             lFacility = lFacility + pFacility.get(i) + " ";
         }

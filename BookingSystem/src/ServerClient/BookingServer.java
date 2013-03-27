@@ -128,6 +128,8 @@ public class BookingServer {
                             returnMessage = executeCommands(reqMessage, bookingData, dgPacket.getSocketAddress());
                             
                             // We register the new response in the serverlog.
+                            System.out.println("Registering request: " + requestID + 
+                                    " for " + dgPacket.getSocketAddress().toString());
                             serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
                         
                         } else {

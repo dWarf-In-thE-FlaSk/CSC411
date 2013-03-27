@@ -86,8 +86,8 @@ public class BookingServer {
         
         // A message is lost every [lossFrequency] message received
         int iterations = 0;
-        int requestLossFreq = 5;
-        int responseLossFreq = 7;
+        int requestLossFreq = 7;
+        int responseLossFreq = 11;
         
         while(true) {
             // For the message loss

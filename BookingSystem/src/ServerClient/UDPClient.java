@@ -6,6 +6,7 @@ package ServerClient;
 
 import java.io.IOException;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -28,8 +29,6 @@ public class UDPClient {
          */
         int port;
         InetAddress server = null;
-        
-        int requestID = 100;
         
         boolean Error = false;
         
@@ -54,8 +53,8 @@ public class UDPClient {
             boolean received = false;
 
             reqFacility.setRequest(8);
-            reqFacility.setRequestID(requestID);
-            requestID++;
+            reqFacility.setRequestID(getRequestID());
+           
             reqFac = Marshaller.marshall(reqFacility);
 
             
@@ -142,9 +141,7 @@ public class UDPClient {
 		
 		message = Arrays.asList(messages);
                 
-                RequestMessage reqMessage = makeMessage(message, requestID);
-
-                requestID++;
+                RequestMessage reqMessage = makeMessage(message);
                             
                 //reqMessage.
                 
@@ -239,12 +236,12 @@ public class UDPClient {
        }
     }
 
-    static RequestMessage makeMessage(List<String> message, int requestID) {
+    static RequestMessage makeMessage(List<String> message) {
         RequestMessage reqMessage = new RequestMessage();
         
         int requestIndex = new Integer(message.get(0));
         
-        reqMessage.setRequestID(requestID);
+        reqMessage.setRequestID(getRequestID());
         reqMessage.setRequest(requestIndex);
         
 
@@ -314,5 +311,13 @@ public class UDPClient {
                 + "Please input it here: \n\n";
 
         System.out.println(startMsg);
+    }
+    
+    public static int getRequestID() {
+        Date date=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("MMddhhmmss");
+        
+	int requestID = new Integer(df.format(date));
+	return requestID;
     }
 }

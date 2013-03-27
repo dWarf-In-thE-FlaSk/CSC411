@@ -13,6 +13,15 @@ public class BookingEntity {
     private BookingDate aStartDate;
     private BookingDate aEndDate;
     private String aConformationID;
+    private boolean valid;
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
     
     public BookingEntity() {
         super();
@@ -23,6 +32,7 @@ public class BookingEntity {
         aStartDate = pStart;
         aEndDate = pEnd;
         aConformationID = pID;
+        valid = true;
     }
     
     public void setFacility(String pFacility) {

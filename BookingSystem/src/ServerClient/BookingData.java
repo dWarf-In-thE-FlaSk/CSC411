@@ -167,11 +167,11 @@ public class BookingData {
         BookingDate lStartDate;
         BookingDate lEndDate;
         
-        if(indicator.startsWith("a")) {
+        if(indicator.startsWith("p")) {
             lStartDate = lEntity.getStartDate().increment(day, hour, minute);
             lEndDate = lEntity.getEndDate().increment(day, hour, minute);
         }
-        else if(indicator.startsWith("p")) {
+        else if(indicator.startsWith("a")) {
             lStartDate = lEntity.getStartDate().decrement(day, hour, minute);
             lEndDate = lEntity.getEndDate().decrement(day, hour, minute);
         }
@@ -184,10 +184,12 @@ public class BookingData {
             
         }
         
+        lEntity.setValid(false);
         if (!checkAvailability(lEntity.getFacility(), lStartDate, lEndDate)) {
             msg.setRequestSuccessful(false);
             msg.addResponseMessage("not available for overlapping");
             
+            lEntity.setValid(true);
             return msg;
         }
         
@@ -253,6 +255,10 @@ public class BookingData {
         ArrayList<BookingEntity> lList = aRecord.get(pFacility);
         
         for(BookingEntity lEntity: lList) {
+            if (!lEntity.isValid()) {
+                continue;
+            }
+            
             if (lEntity.isOverlapping(pStartDate, pEndDate)) {
                 return false;
             }

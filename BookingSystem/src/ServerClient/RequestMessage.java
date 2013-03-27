@@ -118,6 +118,8 @@ public class RequestMessage implements Message {
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
         
+        System.out.print("RequestMessage got a serialized object to unserialize: " + serializedMessageContent.toString());
+        
         this.setRequest(Integer.parseInt(serializedMessageContent.get(0)));
         this.setUsesServerLog(Boolean.parseBoolean(serializedMessageContent.get(1)));
                 
@@ -131,7 +133,7 @@ public class RequestMessage implements Message {
             if(iter.hasNext()) {
                 String value = iter.next();
                 this.setAttribute(key, value);
-                System.out.print("In requestMessage - found key: " + key + " with value: " + value);
+                System.out.println("In requestMessage - found key: " + key + " with value: " + value);
             }
         }
     } 

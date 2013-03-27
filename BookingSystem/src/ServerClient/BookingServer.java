@@ -99,6 +99,9 @@ public class BookingServer {
             if(iterations % requestLossFreq != 0) { // We don't simulate a request lost on the way to the server.
                 data = dgPacket.getData();
                 
+                // Printing out what we have received.
+                System.out.println("Received data: " + new String(data, "UTF-8"));
+                
                 // SocketAddress of the packet will be used a lot so for readability:
                 SocketAddress senderAddress = dgPacket.getSocketAddress();
 
@@ -310,7 +313,7 @@ public class BookingServer {
         byte[] data = Marshaller.marshall(observerMessage);
         
         // Make a DatagramSocket to send the packages through.
-        DatagramSocket dgSocket = new DatagramSocket(8008);
+        DatagramSocket dgSocket = new DatagramSocket(8009);
         // Attach the data to the packet being sent.
         DatagramPacket dgPacket = new DatagramPacket(data, data.length); 
         

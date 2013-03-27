@@ -175,10 +175,14 @@ public class UDPClient {
                 
                 makeMessage(reqMessage, message, requestID);
 
-                byte[] sendBuffer = new byte[1024];
-                byte[] rcvBuffer = new byte[1024];
+                //reqMessage.
+                
+                byte[] sendBuffer = new byte[2048];
+                byte[] rcvBuffer = new byte[2048];
 
                 sendBuffer = Marshaller.marshall(reqMessage);
+                
+                System.out.println("Received data from Server: " + new String(sendBuffer, "UTF-8"));
                 
                 //Start transmit/retransmit message 
                 
@@ -202,7 +206,9 @@ public class UDPClient {
                                 clientSocket.receive(receivePacket);
                                 while (receivePacket.getLength() != 0&&!finish) {
                                     byte[] data = receivePacket.getData();
-
+                                       
+                                    //System.out.println("Received data from Server: " + new String(data, "UTF-8"));
+                                    
                                     // do the unmarshaller
                                     rcvMessage = Marshaller.unmarshall(data);
 

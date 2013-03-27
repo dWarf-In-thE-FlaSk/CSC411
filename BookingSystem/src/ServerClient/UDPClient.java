@@ -29,23 +29,20 @@ public class UDPClient {
         int port;
         InetAddress server = null;
         
-        int requestID = 10;
+        int requestID = 100;
         
         boolean Error = false;
         
         
         while (true && !Error) {
 
-            requestID++;
-
             List<String> message;
             List<String> facilityList = null;
 
-            Message rcvMessage = null;
-            
-            RequestMessage reqMessage = new RequestMessage();
             String responseString = new String();
             boolean timeout = true;
+            
+            Message rcvMessage = null;    
             
             RequestMessage reqFacility = new RequestMessage();
             byte[] reqFac = new byte[1024];
@@ -135,34 +132,6 @@ public class UDPClient {
 
                 Start(facilityList);
                 
-                /*
-                Scanner input = new Scanner(System.in);
-
-
-                input.useDelimiter(" |,|\\.");
-
-<<<<<<< HEAD
-=======
-
-               int i=0;
-               
-               
->>>>>>> nn
-                while (input.hasNext()) {
-                    
-                    System.out.println(i);
-                    
-                    message.add(input.next());
-                    
-                    System.out.println(i);
-                   
-                    
-                    System.out.println(message.get(i));
-                    i++;
-                }
-                */
-                
-                
                 Scanner input = new Scanner(System.in);
 		
 		String temp = input.next();
@@ -173,8 +142,10 @@ public class UDPClient {
 		
 		message = Arrays.asList(messages);
                 
-                makeMessage(reqMessage, message, requestID);
+                RequestMessage reqMessage = makeMessage(message, requestID);
 
+                requestID++;
+                            
                 //reqMessage.
                 
                 byte[] sendBuffer = new byte[2048];
@@ -199,7 +170,7 @@ public class UDPClient {
                
                         //Timmer and loop Here
                         received = false;
-                        clientSocket.setSoTimeout(10000);  // in ms
+                        clientSocket.setSoTimeout(20000);  // in ms
 
                         try {
                             while (!received) {
@@ -263,8 +234,9 @@ public class UDPClient {
        }
     }
 
-    static void makeMessage(RequestMessage reqMessage, List<String> message, int requestID) {
-
+    static RequestMessage makeMessage(List<String> message, int requestID) {
+        RequestMessage reqMessage = new RequestMessage();
+        
         reqMessage.setRequestID(requestID);
         reqMessage.setRequest(new Integer(message.get(0)));
         
@@ -307,6 +279,8 @@ public class UDPClient {
                 break;
             }
         }
+        
+        return reqMessage;
 
     }
 

@@ -245,7 +245,7 @@ public class UDPClient {
                             List<String> responseList = a.getResponseMessages();
                             responseString = responseList.get(responseList.size() - 1);
 
-                            if (a.isRequestSuccessful()) {
+                            if (!a.isRequestSuccessful()) {
                                 System.out.println("Request Unsuccessful" + responseString);
                             } else {
                                 System.out.println("Request successful. Booking ID:" + responseString);

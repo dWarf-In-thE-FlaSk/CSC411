@@ -58,11 +58,11 @@ public class BookingEntity {
     }
 
     public boolean isOverlapping(BookingDate pStartDate, BookingDate pEndDate) {
-        if(aStartDate.isBefore(pEndDate) || aEndDate.isAfter(pStartDate)) {
-            return true;
+        if(aStartDate.isAfter(pEndDate) || aEndDate.isBefore(pStartDate)) {
+            return false;
         }
         else {
-            return false;
+            return true;
         }
     }
 }

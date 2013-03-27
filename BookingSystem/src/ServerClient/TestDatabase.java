@@ -29,7 +29,7 @@ public class TestDatabase {
         
         testRegister(bookingData);
         
-        //testChanging(bookingData);
+        testChanging(bookingData);
         
         testGetAvailability(bookingData);
         
@@ -87,10 +87,7 @@ public class TestDatabase {
         
         ResponseMessage msg = new ResponseMessage();
         
-        BookingDate start = new BookingDate("MONDAY/8/00");
-        BookingDate end = new BookingDate("MONDAY/10/00");
-                
-        msg = (ResponseMessage) bd.changeBooking("LTA#0", "advance", 10);
+        msg = (ResponseMessage) bd.changeBooking("LTA#0", "advance", 2);
         
         List<String> list = msg.getResponseMessages();
         for (String aName: list) {

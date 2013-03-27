@@ -24,13 +24,13 @@ public class BookingDate implements Cloneable{
     }
     
     public BookingDate(Day pDay, int pHour, int pMinute) {
-        this.aDate = pDay.toString() + new Integer(pHour).toString() 
-                + new Integer(pMinute).toString();
+        this.aDate = pDay.toString() + "/" + new Integer(pHour).toString() 
+                + "/" +new Integer(pMinute).toString();
     }
     
     public void setDate(Day pDay, int pHour, int pMinute) {
-        this.aDate = pDay.toString() + new Integer(pHour).toString() 
-                    + new Integer(pMinute).toString();
+        this.aDate = pDay.toString() + "/" + new Integer(pHour).toString() 
+                    + "/" +new Integer(pMinute).toString();
     }
         
     

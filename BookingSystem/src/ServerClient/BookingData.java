@@ -77,7 +77,7 @@ public class BookingData {
     }
   
     public String getFacilityByID(String pID) {
-        String[] ID = pID.split("#");
+        String[] ID = pID.split("@");
         
         return ID[0];
     }
@@ -114,7 +114,7 @@ public class BookingData {
         ArrayList<BookingEntity> lList = aRecord.get(pFacility);
         
         //case that there is no overlapping entity in the list
-        String lID = pFacility + "#" + lList.size();
+        String lID = pFacility + "@" + lList.size();
         
         lList.add(new BookingEntity(pFacility, pStartDate, pEndDate, lID));
       
@@ -137,7 +137,7 @@ public class BookingData {
         ResponseMessage msg = new ResponseMessage();
         ExceptionMessage msgEx = new ExceptionMessage();
         
-        String[] ID = pID.split("#");
+        String[] ID = pID.split("@");
         
         ArrayList<BookingEntity> lList = aRecord.get(ID[0]);
         
@@ -207,7 +207,7 @@ public class BookingData {
         ResponseMessage msg = new ResponseMessage();
         ExceptionMessage msgEx = new ExceptionMessage();
         
-        String[] ID = pID.split("#");
+        String[] ID = pID.split("@");
         
         ArrayList<BookingEntity> lList = aRecord.get(ID[0]);
         

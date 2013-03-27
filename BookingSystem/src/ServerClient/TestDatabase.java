@@ -87,7 +87,7 @@ public class TestDatabase {
         
         ResponseMessage msg = new ResponseMessage();
         
-        msg = (ResponseMessage) bd.changeBooking("LTA#0", "p", 1);
+        msg = (ResponseMessage) bd.changeBooking("LTA@0", "p", 1);
         
         List<String> list = msg.getResponseMessages();
         for (String aName: list) {

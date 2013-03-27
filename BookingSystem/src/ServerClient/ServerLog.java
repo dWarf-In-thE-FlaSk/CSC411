@@ -55,9 +55,11 @@ public class ServerLog {
     public boolean requestIsLoggedForClient(int id, SocketAddress client) {
         // If the log is not created or it doesn't contain the client key this
         // must be the first query about this client
-        if (log == null || log.containsKey(client)) {
+        if (log == null) {
             return false;
-        } else {
+        } else if (!log.containsKey(client)) { // Client has no registered requests
+            return false;
+        } else { // Check if last request is equal to the one being tried.
             return (log.get(client).getRequestID() == id);
         }
     }
@@ -73,9 +75,8 @@ public class ServerLog {
      * one logged (for any reason).
      */
     public Message responsForRequest(int id, SocketAddress client) {
-        if (log != null) {
-            RequestResponsePair rrp = log.get(client);
-            return (rrp.getRequestID()== id ? rrp.getResponse() : null);
+        if (this.requestIsLoggedForClient(id, client)) {            
+            return this.log.get(client).getResponse();
         } else {
             return null;
         }

@@ -153,7 +153,7 @@ public class UDPClient {
 
                 sendBuffer = Marshaller.marshall(reqMessage);
                 
-                System.out.println("Received data from Server: " + new String(sendBuffer, "UTF-8"));
+                System.out.println("Sending data : " + new String(sendBuffer, "UTF-8"));
                 
                 //Start transmit/retransmit message 
                 
@@ -214,6 +214,11 @@ public class UDPClient {
                         } else if (rcvMessage.getMessageType() == 2) {
                             ResponseMessage a = (ResponseMessage) rcvMessage;
                             List<String> responseList = a.getResponseMessages();
+                            
+                            if (responseList.size() == 0){
+                                
+                                responseList.add("no message response!");
+                            }
                             responseString = responseList.get(responseList.size() - 1);
 
                             if (!a.isRequestSuccessful()) {
@@ -237,11 +242,13 @@ public class UDPClient {
     static RequestMessage makeMessage(List<String> message, int requestID) {
         RequestMessage reqMessage = new RequestMessage();
         
+        int requestIndex = new Integer(message.get(0));
+        
         reqMessage.setRequestID(requestID);
-        reqMessage.setRequest(new Integer(message.get(0)));
+        reqMessage.setRequest(requestIndex);
         
 
-        switch (reqMessage.getRequest()) {
+        switch (requestIndex) {
 
             case 1: {
 
@@ -255,7 +262,7 @@ public class UDPClient {
             case 2: {
                 reqMessage.setAttribute("bookingID", message.get(1));
                 reqMessage.setAttribute("changeIndicator", message.get(2));
-                reqMessage.setAttribute("changeDate", message.get(3));
+                reqMessage.setAttribute("hours", message.get(3));
                 reqMessage.setUsesServerLog(new Boolean(message.get(4)));
                 break;
             }
@@ -276,6 +283,10 @@ public class UDPClient {
             case 5: {
                 reqMessage.setAttribute("bookingID", message.get(1));
                 reqMessage.setUsesServerLog(new Boolean(message.get(2)));
+                break;
+            }
+            case 6: {
+                reqMessage.setUsesServerLog(new Boolean(message.get(1)));
                 break;
             }
         }

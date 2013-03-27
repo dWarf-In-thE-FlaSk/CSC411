@@ -273,6 +273,9 @@ public class BookingServer {
                     break;
                 }
             }
+            
+        } catch (CloneNotSupportedException e) { // If BookingData throws a CloneExceptionMessage to the server, we want to know.
+            returnMessage = getServerExceptionMessage("A CloneExceptionMessage was thrown to server by BookingData");
         
         } catch (Exception e) { // If an exception is caught we print the problem and return a message to the client.
             returnMessage = getServerExceptionMessage("An exception was thrown in the server: " + e.getMessage());

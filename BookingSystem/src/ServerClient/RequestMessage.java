@@ -98,6 +98,7 @@ public class RequestMessage implements Message {
         serializedContent.add(String.valueOf(this.isUsesServerLog()));
         
         for (Map.Entry<String, String> entry : getAttributes().entrySet()) {
+            System.out.println("In requestMessage - serializing key: " + entry.getKey() + " with value: " + entry.getValue());
             serializedContent.add(entry.getKey());
             serializedContent.add(entry.getValue());
         }
@@ -125,7 +126,9 @@ public class RequestMessage implements Message {
         while(iter.hasNext()) {
             String key = iter.next();
             if(iter.hasNext()) {
-                this.setAttribute(key, iter.next());
+                String value = iter.next();
+                this.setAttribute(key, value);
+                System.out.print("In requestMessage - found key: " + key + " with value: " + value);
             }
         }
     } 

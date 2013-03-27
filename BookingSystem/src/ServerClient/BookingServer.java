@@ -71,12 +71,7 @@ public class BookingServer {
         // Creating a serverlog
         System.out.println("Creating a new server log");
         ServerLog serverLog = new ServerLog();
-
-        byte[] outData = new byte[2048];
-        byte[] inData = new byte[2048];
-        DatagramPacket outPacket = new DatagramPacket(outData, outData.length);
-        DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
-        
+      
         // Initializing the server with a few facilities.
         System.out.println("Creating new facilities in the reservation system");
         bookingData.addFacility("LTA");
@@ -90,6 +85,12 @@ public class BookingServer {
         int responseLossFreq = 11;
         
         while(true) {
+            
+            byte[] outData = new byte[2048];
+            byte[] inData = new byte[2048];
+            DatagramPacket outPacket = new DatagramPacket(outData, outData.length);
+            DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
+            
             // For the message loss
             iterations++;
            

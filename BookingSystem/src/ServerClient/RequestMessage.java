@@ -92,16 +92,19 @@ public class RequestMessage implements Message {
      */
     @Override
     public List<String> serializeMessageContent() {
+        System.out.println("Serializing request message");
         List<String> serializedContent = new ArrayList<String>();
         
         serializedContent.add(String.valueOf(this.getRequest()));
         serializedContent.add(String.valueOf(this.isUsesServerLog()));
-        
+                
         for (Map.Entry<String, String> entry : getAttributes().entrySet()) {
             System.out.println("In requestMessage - serializing key: " + entry.getKey() + " with value: " + entry.getValue());
             serializedContent.add(entry.getKey());
             serializedContent.add(entry.getValue());
         }
+        
+        System.out.println("Serialized message: " + serializedContent.toString());
         return serializedContent;
     }
     

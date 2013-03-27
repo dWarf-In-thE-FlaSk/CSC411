@@ -295,7 +295,7 @@ public class BookingData {
         
             for (BookingEntity lEntity: bookings) {
                 info = info + '\n' + lEntity.getFacility() + 
-                        "From" + lEntity.getStartDate() + "to" + lEntity.getEndDate();
+                        " From " + lEntity.getStartDate() + " to " + lEntity.getEndDate();
             }
         }
         

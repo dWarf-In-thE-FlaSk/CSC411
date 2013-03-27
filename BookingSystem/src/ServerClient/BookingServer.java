@@ -25,7 +25,7 @@ import java.util.List;
  * Attributes for the RequestMessage:
  * "bookingID" - The ID of the booking as returned by the server when the booking was made.
  * "changeIndicator" - if it's a postponement this should start with a "p", if it's an advancement it should start with an "a"
- * "bookingDate" - The data to change the booking to.
+ * "bookingDate" - The outData to change the booking to.
  * 
  * 3: Check availability
  * Attributes for the RequestMessage:
@@ -72,8 +72,10 @@ public class BookingServer {
         System.out.println("Creating a new server log");
         ServerLog serverLog = new ServerLog();
 
-        byte[] data = new byte[1024]; 
-        DatagramPacket dgPacket = new DatagramPacket(data, data.length);
+        byte[] outData = new byte[2048];
+        byte[] inData = new byte[2048];
+        DatagramPacket outPacket = new DatagramPacket(outData, outData.length);
+        DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
         
         // Initializing the server with a few facilities.
         System.out.println("Creating new facilities in the reservation system");
@@ -91,22 +93,22 @@ public class BookingServer {
             // For the message loss
             iterations++;
            
-            // We begin listening for requests, this will wait until data is received.
+            // We begin listening for requests, this will wait until outData is received.
             System.out.println("Listening for incoming requests");
-            dgSocket.receive(dgPacket);
+            dgSocket.receive(inPacket);
             
             // Check if we should simulate requst loss
             if(iterations % requestLossFreq != 0) { // We don't simulate a request lost on the way to the server.
-                data = dgPacket.getData();
+                inData = inPacket.getData();
                 
                 // Printing out what we have received.
-                System.out.println("Received data: " + new String(data, "UTF-8"));
+                System.out.println("Received data: " + new String(inData, "UTF-8"));
                 
                 // SocketAddress of the packet will be used a lot so for readability:
-                SocketAddress senderAddress = dgPacket.getSocketAddress();
+                SocketAddress senderAddress = inPacket.getSocketAddress();
 
                 // Unmarshalling methods. See static Marshaller methods for reference
-                Message receivedMessage = Marshaller.unmarshall(data);
+                Message receivedMessage = Marshaller.unmarshall(inData);
 
                 // The request ID of a message is the second element
                 int requestID = receivedMessage.getRequestID();
@@ -156,10 +158,12 @@ public class BookingServer {
                 // First see if we should simulate a response loss.
                 if (iterations % responseLossFreq != 0) {
                     // If not, send the response
-                    data = Marshaller.marshall(returnMessage);
-                    dgPacket.setData(data);
-                    dgPacket.setSocketAddress(senderAddress);
-                    dgSocket.send(dgPacket); // Throws IOException                    
+                    outData = Marshaller.marshall(returnMessage);
+                    System.out.println("Return message as array of byte: " + new String(outData, "UTF-8"));
+                    outPacket.setData(outData);
+                    outPacket.setLength(outData.length);
+                    outPacket.setSocketAddress(senderAddress);
+                    dgSocket.send(outPacket); // Throws IOException                    
                     System.out.println("Returning message");
                 } else {
                     System.out.println("Simulating a lost response");
@@ -309,18 +313,20 @@ public class BookingServer {
         }
         // Set a requestID, it's irrelevant in this case so just put it to 0
         observerMessage.setRequestID(0);
-        // Marshall the data being sent to the observer.
+        // Marshall the outData being sent to the observer.
         byte[] data = Marshaller.marshall(observerMessage);
         
-        // Make a DatagramSocket to send the packages through.
+        // Make a DatagramSocket to send the packages through. (Can't have 8008 since it's still open in the main() function)
         DatagramSocket dgSocket = new DatagramSocket(8009);
-        // Attach the data to the packet being sent.
+        // Attach the outData to the packet being sent.
         DatagramPacket dgPacket = new DatagramPacket(data, data.length); 
         
         for(Observer observer : observers) {
             dgPacket.setSocketAddress(observer.getaIPAddr());
             dgSocket.send(dgPacket);
         }
+        // Have to close the socket to be able to use the same port later.
+        dgSocket.close();
     }
     
     /**

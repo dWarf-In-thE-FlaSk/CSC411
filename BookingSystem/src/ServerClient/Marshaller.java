@@ -81,11 +81,10 @@ public class Marshaller {
         
         unMarshalledMessage.setRequestID(requestID);
         
-        List<String> remaining = unMarshalledList.subList(2, unMarshalledList.size());
-        
-        // Removing the last element with the extra data on it.
-        remaining.remove(remaining.size() - 1);
-        
+        // We exclude the first two objects (messageType and requestID)
+        // We also exclude the last object (being a garbage object called end)
+        List<String> remaining = unMarshalledList.subList(2, unMarshalledList.size()-1);
+                
         unMarshalledMessage.unserializeAndSetMessageContent(remaining);
         
         return unMarshalledMessage;

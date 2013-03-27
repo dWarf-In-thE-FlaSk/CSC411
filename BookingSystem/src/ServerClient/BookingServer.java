@@ -98,6 +98,9 @@ public class BookingServer {
             // Check if we should simulate requst loss
             if(iterations % requestLossFreq != 0) { // We don't simulate a request lost on the way to the server.
                 data = dgPacket.getData();
+                
+                // SocketAddress of the packet will be used a lot so for readability:
+                SocketAddress senderAddress = dgPacket.getSocketAddress();
 
                 // Unmarshalling methods. See static Marshaller methods for reference
                 Message receivedMessage = Marshaller.unmarshall(data);
@@ -118,19 +121,19 @@ public class BookingServer {
                         
                         // If this request has already been processed once, get the response and resend it.
                         System.out.println("Using serverlog");
-                        returnMessage = serverLog.responsForRequest(requestID, dgPacket.getSocketAddress());
+                        returnMessage = serverLog.responsForRequest(requestID, senderAddress);
                         
                         // Else execute the operation and register the response.
                         if (returnMessage == null) {
                             
                             // Executing the request.
                             System.out.println("Did not find that the request had been sent before");
-                            returnMessage = executeCommands(reqMessage, bookingData, dgPacket.getSocketAddress());
+                            returnMessage = executeCommands(reqMessage, bookingData, senderAddress);
                             
                             // We register the new response in the serverlog.
                             System.out.println("Registering request: " + requestID + 
-                                    " for " + dgPacket.getSocketAddress().toString());
-                            serverLog.registerRequest(dgPacket.getSocketAddress(), requestID, returnMessage);
+                                    " for " + senderAddress.toString());
+                            serverLog.registerRequest(senderAddress, requestID, returnMessage);
                         
                         } else {
                             System.out.println("Request found to be duplicate of previous request. Returning the logged response.");                            
@@ -139,7 +142,7 @@ public class BookingServer {
                     } else { // If the client does not want us to use serverlog.
                         // We just execute the command.
                         System.out.println("NOT using serverlog");
-                        returnMessage = executeCommands(reqMessage, bookingData, dgPacket.getSocketAddress());
+                        returnMessage = executeCommands(reqMessage, bookingData, senderAddress);
                     }
                 } else { // If the received Message is not a RequestMessage.
                     // Return an exception cause the message is not a RequestMessage
@@ -152,7 +155,7 @@ public class BookingServer {
                     // If not, send the response
                     data = Marshaller.marshall(returnMessage);
                     dgPacket.setData(data);
-                    dgPacket.setAddress(dgPacket.getAddress());
+                    dgPacket.setSocketAddress(senderAddress);
                     dgSocket.send(dgPacket); // Throws IOException                    
                     System.out.println("Returning message");
                 } else {

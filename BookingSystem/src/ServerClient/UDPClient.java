@@ -311,15 +311,16 @@ public class UDPClient {
             lFacility = lFacility + pFacility.get(i) + " ";
         }
 
-        String startMsg = "Welcome to Booking System!\n"
-                + "facility list: " + lFacility + '\n'
+        String startMsg = "\nWelcome to Booking System!\\nn"
+                + "facility list: " + lFacility + "\n\n"
                 + "please select the following three options:(by index)\n"
-                + "1. Make a new booking.\n(Indicate facility name, start and end date)\n"
-                + "2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n"
-                + "3. Check avaiablity of a facility.\n(Indicate facility name and days)\n"
-                + "4. Monitor a facility\n(Indicate facility name and interval)\n"
-                + "5. Cancel a booking\n(Indicate the confirmation ID)\n"
-                + "6. Check all facilities' availability\n";
+                + "1. Make a new booking.\n(Indicate facility name, start and end date)\n\n"
+                + "2. Change a booking.\n(Indicate confirmation ID, advance/postpone and offset)\n\n"
+                + "3. Check avaiablity of a facility.\n(Indicate facility name and days)\n\n"
+                + "4. Monitor a facility\n(Indicate facility name and interval)\n\n"
+                + "5. Cancel a booking\n(Indicate the confirmation ID)\n\n"
+                + "6. Check all facilities' availability\n\n"
+                + "Please input it here: \n\n";
 
         System.out.println(startMsg);
     }

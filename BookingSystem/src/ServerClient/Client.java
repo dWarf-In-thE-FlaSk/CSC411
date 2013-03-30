@@ -166,7 +166,12 @@ public class Client {
 
                                 //Timmer and loop Here
                                 received = false;
-                                clientSocket.setSoTimeout(20000);  // in ms
+                                if (new Integer(message.get(0)) == 3 ) {
+                                    clientSocket.setSoTimeout(0);
+                                }
+                                else {
+                                    clientSocket.setSoTimeout(20000);  // in ms
+                                }
 
                                 try {
                                     while (!received) {
@@ -252,7 +257,7 @@ public class Client {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("startDate", message.get(2));
                 reqMessage.setAttribute("endDate", message.get(3));
-                reqMessage.setUsesServerLog(new Boolean(message.get(4)));
+                reqMessage.setUsesServerLog(Boolean.valueOf(message.get(4)));
                 break;
 
             }
@@ -260,7 +265,7 @@ public class Client {
                 reqMessage.setAttribute("bookingID", message.get(1));
                 reqMessage.setAttribute("changeIndicator", message.get(2));
                 reqMessage.setAttribute("hours", message.get(3));
-                reqMessage.setUsesServerLog(new Boolean(message.get(4)));
+                reqMessage.setUsesServerLog(Boolean.valueOf(message.get(4)));
                 break;
             }
             case 3: {
@@ -268,24 +273,24 @@ public class Client {
                 
                 String days = message.get(2).replace('&', ',');               
                 reqMessage.setAttribute("days", days);
-                reqMessage.setUsesServerLog(new Boolean(message.get(3)));
+                reqMessage.setUsesServerLog(Boolean.valueOf(message.get(3)));
                 break;
 
             }
             case 4: {
                 reqMessage.setAttribute("facility", message.get(1));
                 reqMessage.setAttribute("interval", message.get(2));
-                reqMessage.setUsesServerLog(new Boolean(message.get(3)));
+                reqMessage.setUsesServerLog(Boolean.valueOf(message.get(3)));
                 break;
 
             }
             case 5: {
                 reqMessage.setAttribute("bookingID", message.get(1));
-                reqMessage.setUsesServerLog(new Boolean(message.get(2)));
+                reqMessage.setUsesServerLog(Boolean.valueOf(message.get(2)));
                 break;
             }
             case 6: {
-                reqMessage.setUsesServerLog(new Boolean(message.get(1)));
+                reqMessage.setUsesServerLog(Boolean.valueOf(message.get(1)));
                 break;
             }
         }

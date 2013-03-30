@@ -72,7 +72,7 @@ public class TestDatabase {
         BookingDate start2 = new BookingDate("MONDAY/11/00");
         BookingDate end2 = new BookingDate("MONDAY/13/00");
         
-        msg2 = (ResponseMessage) bd.registerBooking("LTA", start2, end2);
+        msg2 = (ResponseMessage) bd.registerBooking("LTB", start2, end2);
          
         List<String> list2 = msg2.getResponseMessages();
         for (String aName: list2) {

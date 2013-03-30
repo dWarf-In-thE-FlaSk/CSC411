@@ -163,7 +163,7 @@ public class BookingServer {
                 // Now we want to return the response to wherever it came from.
                 // First see if we should simulate a response loss.
                 // We also check that the returnMessage is not null (happens if the request was "register as observer")
-                if (iterations % responseLossFreq != 0 || returnMessage != null) {
+                if (iterations % responseLossFreq != 0 && returnMessage != null) {
                     // If not, send the response
                     outData = Marshaller.marshall(returnMessage);
                     System.out.println("Return message as array of byte: " + new String(outData, "UTF-8"));

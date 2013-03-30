@@ -166,7 +166,7 @@ public class Client {
 
                                 //Timmer and loop Here
                                 received = false;
-                                if (new Integer(message.get(0)) == 3 ) {
+                                if (new Integer(message.get(0)) == 4 ) {
                                     clientSocket.setSoTimeout(0);
                                 }
                                 else {

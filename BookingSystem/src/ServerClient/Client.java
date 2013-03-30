@@ -16,23 +16,12 @@ import java.util.*;
 public class Client {
 
     public static void main(String args[]) throws Exception {
-        //we should have a while loop to ask user to input
-
-        /*
-         * refer to the following code for taking instruction from user
-         *
-         * ArrayList message = new ArrayList(); Scanner scan = new
-         * Scanner(System.in); scan.useDelimiter(" |,|\\."); while
-         * (scan.hasNext()) { meaasge.add(scan.next()); }
-         *
-         * then pass this message to marshaller
-         */
+        
         int port;
         InetAddress server = null;
-
+        
         boolean Error = false;
         boolean Quit = false;
-
 
         while (true && !Error && !Quit) {
 
@@ -53,12 +42,13 @@ public class Client {
             int count;
             boolean received = false;
 
+            // making the the request to get the updated facility list
+
             reqFacility.setRequest(8);
             reqFacility.setRequestID(getRequestID());
-
             reqFac = Marshaller.marshall(reqFacility);
 
-
+            //get the IP address and port number from the user
             System.out.print("Please Enter the IP Address: ");
             Scanner IPScan = new Scanner(System.in);
 
@@ -67,8 +57,6 @@ public class Client {
             String[] lIP = lIPAddr.split("\\.");
 
 
-            //byte[] lIPByte = new byte[]{new Byte(lIP[0]), new Byte(lIP[1]), new Byte(lIP[2]), new Byte(lIP[3])};
-
             server = InetAddress.getByName(lIPAddr);
             System.out.print("Please Enter the Port No.: ");
 
@@ -76,6 +64,7 @@ public class Client {
 
             port = portScan.nextInt();
 
+            //send the facility list request message to server
             while (!finish && !Quit) {
 
                 DatagramPacket sendFacility = new DatagramPacket(reqFac, reqFac.length, server, port);
@@ -84,8 +73,11 @@ public class Client {
                 while (timeout && count != 0) {
                     clientSocket.send(sendFacility);
                     DatagramPacket receiveFacility = new DatagramPacket(rcvFaciity, rcvFaciity.length);
+
+                    //set the timeout to 10s
                     clientSocket.setSoTimeout(10000);
 
+                    //receive the message from server
                     try {
                         while (!received) {
                             clientSocket.receive(receiveFacility);
@@ -100,7 +92,9 @@ public class Client {
                                 //break the loop and print out the result!
                             }
                         }
-                    } catch (SocketTimeoutException e) {         //when timeout print error messageand resend
+                    } catch (SocketTimeoutException e) {
+
+                        //when timeout print error message and resend
 
                         System.out.println("Timeout reached!!! " + e);
                         System.out.println("Resend Request Message now");
@@ -111,10 +105,14 @@ public class Client {
                 }
 
                 if (count == 0) {
-
+                    /*
+                     * if there are no response after the message resend three
+                     * time, It will print out error and quit!
+                     */
                     finish = true;
                     System.out.println("Error ");
                     Error = true;
+                    Quit = true;
                 } else {
 
                     ResponseMessage fac = (ResponseMessage) rcvMessage;
@@ -128,13 +126,13 @@ public class Client {
 
                 if (!Error) {
 
+                    //print out the menu
                     Start(facilityList);
 
+                    //get request input from the user
                     Scanner input = new Scanner(System.in);
 
                     String temp = input.next();
-
-                    //input.close();
 
                     String[] messages = temp.split(",|\\.");
 
@@ -152,7 +150,6 @@ public class Client {
                         System.out.println("Sending data : " + new String(sendBuffer, "UTF-8"));
 
                         //Start transmit/retransmit message 
-
                         finish = false;
                         timeout = true;
                         while (!finish) {
@@ -164,13 +161,17 @@ public class Client {
 
                                 DatagramPacket receivePacket = new DatagramPacket(rcvBuffer, rcvBuffer.length);
 
-                                //Timmer and loop Here
+
                                 received = false;
-                                if (new Integer(message.get(0)) == 4 ) {
+                                /*
+                                 * if the user want to observe the facility the
+                                 * timeout will set to infinty else the timeout
+                                 * is 20s
+                                 */
+                                if (new Integer(message.get(0)) == 4) {
                                     clientSocket.setSoTimeout(0);
-                                }
-                                else {
-                                    clientSocket.setSoTimeout(20000);  // in ms
+                                } else {
+                                    clientSocket.setSoTimeout(20000);
                                 }
 
                                 try {
@@ -179,7 +180,6 @@ public class Client {
                                         while (receivePacket.getLength() != 0 && !finish) {
                                             byte[] data = receivePacket.getData();
 
-                                            //System.out.println("Received data from Server: " + new String(data, "UTF-8"));
 
                                             // do the unmarshaller
                                             rcvMessage = Marshaller.unmarshall(data);
@@ -207,11 +207,13 @@ public class Client {
 
                             if (count != 0) {
                                 System.out.print("Response Message: ");
-                                if (rcvMessage.getMessageType() == -1) {                       //Error message
+                                //Error message
+                                if (rcvMessage.getMessageType() == -1) {
                                     ExceptionMessage a = (ExceptionMessage) rcvMessage;
                                     responseString = a.getExceptionMessage();
                                     System.out.println(responseString);
-                                } else if (rcvMessage.getMessageType() == 2) {
+                                } // response message
+                                else if (rcvMessage.getMessageType() == 2) {
                                     ResponseMessage a = (ResponseMessage) rcvMessage;
                                     List<String> responseList = a.getResponseMessages();
 
@@ -246,10 +248,11 @@ public class Client {
 
         int requestIndex = new Integer(message.get(0));
 
+        //set the request ID of the request
         reqMessage.setRequestID(getRequestID());
         reqMessage.setRequest(requestIndex);
 
-
+        //make the message in different type
         switch (requestIndex) {
 
             case 1: {
@@ -270,8 +273,8 @@ public class Client {
             }
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
-                
-                String days = message.get(2).replace('&', ',');               
+
+                String days = message.get(2).replace('&', ',');
                 reqMessage.setAttribute("days", days);
                 reqMessage.setUsesServerLog(Boolean.valueOf(message.get(3)));
                 break;
@@ -305,7 +308,7 @@ public class Client {
         for (int i = 0; i < pFacility.size(); i++) {
             lFacility = lFacility + pFacility.get(i) + " ";
         }
-
+        // print out the menu
         String startMsg = "\nWelcome to Booking System!\n\n"
                 + "facility list: " + lFacility + "\n\n"
                 + "please select the following three options:(by index)\n"
@@ -322,6 +325,7 @@ public class Client {
     }
 
     public static int getRequestID() {
+        //generate the request ID
         Date date = new Date();
         SimpleDateFormat df = new SimpleDateFormat("MMddhhmmss");
 

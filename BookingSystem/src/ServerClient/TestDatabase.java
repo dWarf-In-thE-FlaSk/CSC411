@@ -29,13 +29,13 @@ public class TestDatabase {
         
         testRegister(bookingData);
         
-        testChanging(bookingData);
+        //testChanging(bookingData);
         
-        testGetAvailability(bookingData);
+        //testGetAvailability(bookingData);
         
-        testRegisterObserver(bookingData);
+        //testRegisterObserver(bookingData);
         
-        testGetObservers(bookingData);
+        //testGetObservers(bookingData);
     }
     
     public static void testGetFacilityName(BookingData bd) {
@@ -57,8 +57,8 @@ public class TestDatabase {
         
         ResponseMessage msg = new ResponseMessage();
         
-        BookingDate start = new BookingDate("MONDAY/8/00");
-        BookingDate end = new BookingDate("MONDAY/10/00");
+        BookingDate start = new BookingDate("MONDAY/12/0");
+        BookingDate end = new BookingDate("MONDAY/14/0");
                 
         msg = (ResponseMessage) bd.registerBooking("LTA", start, end);
         
@@ -69,10 +69,10 @@ public class TestDatabase {
         
         ResponseMessage msg2 = new ResponseMessage();
         
-        BookingDate start2 = new BookingDate("FRIDAY/9/00");
-        BookingDate end2 = new BookingDate("FRIDAY/11/00");
+        BookingDate start2 = new BookingDate("MONDAY/11/00");
+        BookingDate end2 = new BookingDate("MONDAY/13/00");
         
-        msg2 = (ResponseMessage) bd.registerBooking("LTC", start2, end2);
+        msg2 = (ResponseMessage) bd.registerBooking("LTA", start2, end2);
          
         List<String> list2 = msg2.getResponseMessages();
         for (String aName: list2) {

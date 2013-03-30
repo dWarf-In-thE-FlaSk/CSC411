@@ -195,6 +195,7 @@ public class BookingData {
         
         lEntity.setStartDate(lStartDate);
         lEntity.setEndDate(lEndDate);
+        lEntity.setValid(true);
         
         msg.setRequestSuccessful(true);
         msg.addResponseMessage(ID[0]);

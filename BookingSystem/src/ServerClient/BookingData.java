@@ -119,6 +119,7 @@ public class BookingData {
         lList.add(new BookingEntity(pFacility, pStartDate, pEndDate, lID));
       
         msg.setRequestSuccessful(true);
+        msg.addResponseMessage("New booking is made. Confirmation ID: ");
         msg.addResponseMessage(lID);
         
         return msg;
@@ -198,6 +199,7 @@ public class BookingData {
         lEntity.setValid(true);
         
         msg.setRequestSuccessful(true);
+        msg.addResponseMessage("The booking is changed: ");
         msg.addResponseMessage(ID[0]);
         
         return msg;
@@ -240,6 +242,7 @@ public class BookingData {
         }
         
         msg.setRequestSuccessful(true);
+        msg.addResponseMessage("The booking is now cancelled.");
         
         return msg;
     }

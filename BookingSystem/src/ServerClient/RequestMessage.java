@@ -118,7 +118,7 @@ public class RequestMessage implements Message {
     @Override
     public void unserializeAndSetMessageContent(List<String> serializedMessageContent) {
         
-        System.out.print("RequestMessage got a serialized object to unserialize: " + serializedMessageContent.toString());
+        System.out.println("RequestMessage got a serialized object to unserialize: " + serializedMessageContent.toString());
         
         this.setRequest(Integer.parseInt(serializedMessageContent.get(0)));
         this.setUsesServerLog(Boolean.parseBoolean(serializedMessageContent.get(1)));

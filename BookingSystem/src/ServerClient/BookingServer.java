@@ -137,10 +137,14 @@ public class BookingServer {
                             System.out.println("Did not find that the request had been sent before");
                             returnMessage = executeCommands(reqMessage, bookingData, senderAddress);
                             
-                            // We register the new response in the serverlog.
-                            System.out.println("Registering request: " + requestID + 
+                            // Making sure the request is not a "register as observer call".
+                            // In this case null is returned by the "executeCommands" call.
+                            if (returnMessage != null) {
+                                // We register the new response in the serverlog.
+                                serverLog.registerRequest(senderAddress, requestID, returnMessage);
+                                System.out.println("Registering request: " + requestID + 
                                     " for " + senderAddress.toString());
-                            serverLog.registerRequest(senderAddress, requestID, returnMessage);
+                            }
                         
                         } else {
                             System.out.println("Request found to be duplicate of previous request. Returning the logged response.");                            
@@ -158,7 +162,8 @@ public class BookingServer {
                 
                 // Now we want to return the response to wherever it came from.
                 // First see if we should simulate a response loss.
-                if (iterations % responseLossFreq != 0) {
+                // We also check that the returnMessage is not null (happens if the request was "register as observer")
+                if (iterations % responseLossFreq != 0 || returnMessage != null) {
                     // If not, send the response
                     outData = Marshaller.marshall(returnMessage);
                     System.out.println("Return message as array of byte: " + new String(outData, "UTF-8"));
@@ -168,7 +173,12 @@ public class BookingServer {
                     dgSocket.send(outPacket); // Throws IOException                    
                     System.out.println("Returning message");
                 } else {
-                    System.out.println("Simulating a lost response");
+                    if (returnMessage == null) {
+                        System.out.println("The request was to register as observer, no return message.");
+                    }
+                    if (iterations % responseLossFreq == 0) {
+                        System.out.println("Simulating a lost response.");
+                    }
                 }
             
             } else { // We simulate a request being lost on the way to the server.
@@ -238,7 +248,8 @@ public class BookingServer {
                     String facility = requestMessage.getAttribute("facility");
                     int interval = Integer.parseInt(requestMessage.getAttribute("interval"));
                     System.out.println("Registering an observer for facility " +  facility);
-                    returnMessage = bookingData.addObserver(facility, requester, interval);
+                    bookingData.addObserver(facility, requester, interval);
+                    // Leaving the returnMessage as null to indicate that it should not be returned.
                     break;
                 }
                 case 5: {
@@ -289,8 +300,11 @@ public class BookingServer {
             } else {
                 System.out.println("The request was NOT successful!");
             }
-
-            returnMessage.setRequestID(requestMessage.getRequestID());
+            
+            if (returnMessage != null) {
+                returnMessage.setRequestID(requestMessage.getRequestID());
+            }
+            
             return returnMessage;
         }
 
@@ -338,6 +352,9 @@ public class BookingServer {
      * Check a Message to see if a request generated a successful ResponseMessage
      */
     private static boolean returnMessageIsSuccessful(Message returnMessage) {
+        if (returnMessage == null) {
+            return false;
+        }
         if(returnMessage.getMessageType() == 2) {
             ResponseMessage respMessage = (ResponseMessage) returnMessage;
             return respMessage.isRequestSuccessful();

@@ -13,7 +13,10 @@ import java.util.List;
 
 /**
  * 
- * This class will contain the main method that runs and listens for calls
+ * This class will contain the main method that runs and listens for calls.
+ * Everything happens in the main method where a loop is constantly running and
+ * listening for remote commands to invocate on the server. The main method also
+ * holds an object of BookingData which contains the current state of the system
  * 
  * 1: Register request
  * Attributes for the RequestMessage: 
@@ -25,34 +28,34 @@ import java.util.List;
  * Attributes for the RequestMessage:
  * "bookingID" - The ID of the booking as returned by the server when the booking was made.
  * "changeIndicator" - if it's a postponement this should start with a "p", if it's an advancement it should start with an "a"
- * "bookingDate" - The outData to change the booking to.
+ * "hours" - The hours to change the booking by.
  * 
  * 3: Check availability
  * Attributes for the RequestMessage:
  * "facility" - the facility name
  * "days" - A list of days to check the availability for. On sending, in the RequestMessage this attribute should be formatted as a String of days with a comma as separator.
  * 
- * 4: Add facility
+ * 4: Register as an observer
  * Attributes for the RequestMessage:
- * "facility" - the facility to be added.
+ * "facility" - the facility to monitor
+ * "interval" - the interval to monitor over
+ * [OBS! This method will not return a response message]
  * 
  * 5: Cancel booking
+ * Attributes for the RequestMessage:
  * "bookingID" - The bookingID to be cancelled
  * 
  * 6: Check all facilities
+ * Attributes for the RequestMessage:
  * no input
- * 
- * 7: Register as an observer
- * "facility" - the facility to monitor
- * "interval" - the interval to monitor over
- * 
+
+ * 7: Add facility
+ * Attributes for the RequestMessage:
+ * "facility" - the facility to be added.
+ *
  * 8: Get available facilies
+ * Attributes for the RequestMessage:
  * no input
- * 
- * @TODO: Do we need to handle corrupted packets or splitting a message into 
- * several packets?
- * @TODO: When the marshalling and unmarshalling functions have been written, 
- * make corresponding changes in this class.
  * 
  * @author Rikard Andersson
  */

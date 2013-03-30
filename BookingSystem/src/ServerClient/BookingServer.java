@@ -248,8 +248,13 @@ public class BookingServer {
                     String facility = requestMessage.getAttribute("facility");
                     int interval = Integer.parseInt(requestMessage.getAttribute("interval"));
                     System.out.println("Registering an observer for facility " +  facility);
-                    bookingData.addObserver(facility, requester, interval);
-                    // Leaving the returnMessage as null to indicate that it should not be returned.
+                    returnMessage = bookingData.addObserver(facility, requester, interval);
+
+                    if (returnMessageIsSuccessful(returnMessage)) {
+                        System.out.println("Successful in registering observer");
+                    }
+                    // Setting the returnMessage to null to indicate that it should not be returned.
+                    returnMessage = null;
                     break;
                 }
                 case 5: {
@@ -298,7 +303,7 @@ public class BookingServer {
             if (returnMessageIsSuccessful(returnMessage)) {
                 System.out.println("The request was successful!");
             } else {
-                System.out.println("The request was NOT successful!");
+                System.out.println("The request appears to be unsuccessful!");
             }
             
             if (returnMessage != null) {

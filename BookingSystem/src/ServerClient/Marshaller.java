@@ -42,8 +42,10 @@ public class Marshaller {
         StringBuilder marshalledStr = new StringBuilder();
         
         // First two things in the message is the message type and the requestID
-        marshalledStr.append(String.valueOf(messageData.getMessageType()) + "#");
-        marshalledStr.append(String.valueOf(messageData.getRequestID())+ "#");
+        marshalledStr.append(String.valueOf(messageData.getMessageType()));
+        marshalledStr.append("#");
+        marshalledStr.append(String.valueOf(messageData.getRequestID()));
+        marshalledStr.append("#");        
         
         Iterator<String> listIterator = messageData.serializeMessageContent().iterator();
         

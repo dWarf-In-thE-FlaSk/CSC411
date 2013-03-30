@@ -59,8 +59,7 @@ public class Marshaller {
             }
         }
         
-        marshalledStr.append("#");
-        marshalledStr.append("end");
+        marshalledStr.append("#end");
         
         return marshalledStr.toString().getBytes();
     }

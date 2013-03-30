@@ -222,6 +222,7 @@ public class UDPClient {
                                 System.out.println("Request Unsuccessful" + responseString);
                             } else {
                                 System.out.println("Request successful. Booking ID:" + responseString);
+                                
                             }
                         }
 

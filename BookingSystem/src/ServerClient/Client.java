@@ -265,7 +265,9 @@ public class Client {
             }
             case 3: {
                 reqMessage.setAttribute("facility", message.get(1));
-                reqMessage.setAttribute("days", message.get(2));
+                
+                String days = message.get(2).replace('&', ',');               
+                reqMessage.setAttribute("days", days);
                 reqMessage.setUsesServerLog(new Boolean(message.get(3)));
                 break;
 

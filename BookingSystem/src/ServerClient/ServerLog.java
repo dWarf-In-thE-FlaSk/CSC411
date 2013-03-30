@@ -101,30 +101,18 @@ public class ServerLog {
             this.response = response;
         }
         
-        /**
-         * Setter method for requestID
-         * @param requestID 
-         */
         public void setRequestID(int requestID) {
             this.requestID = requestID;
         }
-        /**
-         * Getter method for requestID.
-         */
+
         public int getRequestID() {
             return this.requestID;
         }
-        
-        /**
-         * Setter method for response
-         * @param requestID 
-         */
+
         public void setResponse(Message response) {
             this.response = response;
         }
-        /**
-         * Getter method for response.
-         */
+
         public Message getResponse() {
             return this.response;
         }

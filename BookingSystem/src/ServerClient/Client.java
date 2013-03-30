@@ -309,12 +309,13 @@ public class Client {
         String startMsg = "\nWelcome to Booking System!\n\n"
                 + "facility list: " + lFacility + "\n\n"
                 + "please select the following three options:(by index)\n"
-                + "1. Make a new booking\n(Indicate facility name, start and end date)\n\n"
-                + "2. Change a booking\n(Indicate confirmation ID, advance/postpone and offset)\n\n"
-                + "3. Check avaiablity of a facility.\n(Indicate facility name and days)\n\n"
-                + "4. Monitor a facility\n(Indicate facility name and interval)\n\n"
-                + "5. Cancel a booking\n(Indicate the confirmation ID)\n\n"
-                + "6. Check all facilities' availability\n\n"
+                + "1. Make a new booking\n([1,name,start,end.])\n\n"
+                + "2. Change a booking\n([2,confirmation ID,advance/postpone,offset.])\n\n"
+                + "3. Check avaiablity of a facility.\n([3,facility name,days by &.])\n\n"
+                + "4. Monitor a facility\n(4,facility name,interval.])\n\n"
+                + "5. Cancel a booking\n([5,confirmation ID.])\n\n"
+                + "6. Check all facilities' availability\n([6.])\n\n"
+                + "7. Quit Booking System.\n\n\n"
                 + "Please input it here: \n\n";
 
         System.out.println(startMsg);

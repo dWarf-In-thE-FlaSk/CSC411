@@ -221,12 +221,7 @@ public class UDPClient {
                             if (!a.isRequestSuccessful()) {
                                 System.out.println("Request Unsuccessful" + responseString);
                             } else {
-<<<<<<< HEAD
-                                System.out.println("Request successful. Booking ID:" + responseString);
-                                
-=======
                                 System.out.println("Request successful. " + responseString);
->>>>>>> fixed printed msg to user
                             }
                         }
 

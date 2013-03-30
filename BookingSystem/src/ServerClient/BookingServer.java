@@ -93,6 +93,7 @@ public class BookingServer {
             
             // For the message loss
             iterations++;
+            System.out.println("On iteration: " + iterations);
            
             // We begin listening for requests, this will wait until outData is received.
             System.out.println("Listening for incoming requests");

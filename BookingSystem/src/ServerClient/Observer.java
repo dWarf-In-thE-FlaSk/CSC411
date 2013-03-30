@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ServerClient;
 
 import java.net.SocketAddress;
@@ -10,6 +6,9 @@ import java.util.Date;
 /**
  *
  * @author Lance
+ * 
+ * This class is to represent an object of a user who want to monitor 
+ * some facility. Fields include facility name, IP address and expire time.
  */
 public class Observer {
     private String aFacility;
@@ -22,6 +21,7 @@ public class Observer {
         this.aExpireTime = pExpireTime;
     }
 
+    //Setters and getters
     public String getaFacility() {
         return aFacility;
     }

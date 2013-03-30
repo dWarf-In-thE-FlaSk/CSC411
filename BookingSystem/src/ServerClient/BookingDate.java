@@ -1,13 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ServerClient;
 
 /**
  *
  * @author Lance
+ * 
+ * 
+ * This class is used in BookingData to store information of a specific date object
  */
+
+
 public class BookingDate implements Cloneable{
     private String aDate;
 
@@ -28,6 +29,17 @@ public class BookingDate implements Cloneable{
                 + "/" +new Integer(pMinute).toString();
     }
     
+    @Override
+    public BookingDate clone() throws CloneNotSupportedException {
+        return (BookingDate)super.clone();
+    }
+    
+    @Override
+    public String toString() {
+        return this.aDate;
+    }
+    
+    //Setters and getters
     public void setDate(Day pDay, int pHour, int pMinute) {
         this.aDate = pDay.toString() + "/" + new Integer(pHour).toString() 
                     + "/" +new Integer(pMinute).toString();
@@ -40,12 +52,6 @@ public class BookingDate implements Cloneable{
     
     public String getDate() {
         return aDate;
-    }
- 
-    
-    @Override
-    public BookingDate clone() throws CloneNotSupportedException {
-        return (BookingDate)super.clone();
     }
     
     public Day getDay() {
@@ -66,6 +72,12 @@ public class BookingDate implements Cloneable{
         return new Integer(result[2]);
     }
     
+     /**
+      * Checking if current is before the given date
+      * 
+      * @param pDate = BookingDate to compare to
+      * @return Boolean
+      */
     public boolean isBefore(BookingDate pDate) {
         boolean result;
         
@@ -96,16 +108,25 @@ public class BookingDate implements Cloneable{
         return result;
     }
     
-    @Override
-    public String toString() {
-        return this.aDate;
-    }
-    
+    /**
+     * Check if current date if after the given date
+     * 
+     * @param pDate = BookingDate to compare to
+     * @return Boolean
+     */
     public boolean isAfter(BookingDate pDate) {
                
         return pDate.isBefore(this);
     }
     
+    /**
+     * Increase current BookingDate by given time
+     * 
+     * @param pDay = number of days to add
+     * @param pHour = number of hours to add
+     * @param pMinute = number of minute to add
+     * @return 
+     */
     public BookingDate increment(int pDay, int pHour, int pMinute) {
         Day lDay = this.getDay();
         int lHour = this.getHour();
@@ -134,6 +155,15 @@ public class BookingDate implements Cloneable{
         return new BookingDate(lDay, lHour, lMinute);
     }
     
+    
+    /**
+     * Decrease current BookingDate by given time
+     * 
+     * @param pDay = number of days to minus
+     * @param pHour = number of hours to minus
+     * @param pMinute = number of minute to minus
+     * @return 
+     */ 
     public BookingDate decrement(int pDay, int pHour, int pMinute) {
         return increment(-pDay, -pHour, -pMinute);
         

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ServerClient;
 
 import java.net.SocketAddress;
@@ -21,6 +17,7 @@ public class BookingData {
     
     private HashMap<String, ArrayList<Observer>> aObservers;
 
+    //Default Constructor
     public BookingData() {
         aFacilityList = new ArrayList<String>();
         aRecord = new HashMap<String, ArrayList<BookingEntity>>();
@@ -28,12 +25,15 @@ public class BookingData {
         
     }
     
+    //constructor with existing facility name list
     public BookingData(ArrayList pFacilityList) {
         aFacilityList = pFacilityList;
         aRecord = new HashMap<String, ArrayList<BookingEntity>>();
         aObservers = new HashMap<String, ArrayList<Observer>>();
     }
 
+    //setters and getters
+    
     public void setFacilityList(ArrayList<String> pFacilityList) {
         this.aFacilityList = pFacilityList;
     }
@@ -55,6 +55,11 @@ public class BookingData {
         return aRecord;
     }
     
+    /**
+     * 
+     * @param pFacility = facility's name to be added
+     * @return ResponseMessage, could be successful or not
+     */
     public Message addFacility(String pFacility) {
         ResponseMessage msg = new ResponseMessage();
         
@@ -94,6 +99,7 @@ public class BookingData {
         ResponseMessage msg = new ResponseMessage();
         ExceptionMessage msgEx = new ExceptionMessage();
         
+        //case that user input a wrong ficility name
         if(!aFacilityList.contains(pFacility)) {
             
             msgEx.setExceptionType("InputException");
@@ -150,6 +156,7 @@ public class BookingData {
             }
         }
         
+        //case that user inputs a wrong ID
         if (exist == false) {
             
             msgEx.setExceptionType("InputException");
@@ -175,6 +182,7 @@ public class BookingData {
             lEndDate = lEntity.getEndDate().decrement(day, hour, minute);
         }
         else {
+            //user inputs a wrong word to indicate advancing or postponing
             
             msgEx.setExceptionType("InputException");
             msgEx.setExceptionMessage("wrong Indicator, please enter advance or postpone");
@@ -183,6 +191,7 @@ public class BookingData {
             
         }
         
+        //changing not successful due to overlapping
         lEntity.setValid(false);
         if (!checkAvailability(lEntity.getFacility(), lStartDate, lEndDate)) {
             msg.setRequestSuccessful(false);
@@ -192,6 +201,7 @@ public class BookingData {
             return msg;
         }
         
+        //booking is changed successfully
         lEntity.setStartDate(lStartDate);
         lEntity.setEndDate(lEndDate);
         lEntity.setValid(true);
@@ -203,6 +213,11 @@ public class BookingData {
         
     }
     
+    /**
+     * 
+     * @param pID = confirmation ID of the booking
+     * @return Message to report exception or message
+     */
     public Message cancelBooking (String pID) {
         ResponseMessage msg = new ResponseMessage();
         ExceptionMessage msgEx = new ExceptionMessage();
@@ -221,6 +236,7 @@ public class BookingData {
             }
         }
         
+        // user inputs a wrong ID
         if (exist == false) {
             
             msgEx.setExceptionType("InputException");
@@ -230,6 +246,7 @@ public class BookingData {
             
         }
         
+        // the booking does not exist
         try {
             lList.remove(lEntity);
         }
@@ -238,6 +255,7 @@ public class BookingData {
             msgEx.setExceptionMessage("Booking not exist!");
         }
         
+        //cancel is successful
         msg.setRequestSuccessful(true);
         msg.addResponseMessage("The booking is now cancelled.");
         
@@ -246,11 +264,12 @@ public class BookingData {
     
     
     /**
+     * This method is only for local use, not for server
      * 
      * @param pFacility = facility name to check
      * @param pStartDate = start date
      * @param pEndDate = end date
-     * @return 
+     * @return a boolean
      */
     public boolean checkAvailability (String pFacility, BookingDate pStartDate, BookingDate pEndDate) {
         ArrayList<BookingEntity> lList = aRecord.get(pFacility);
@@ -268,6 +287,14 @@ public class BookingData {
         return true;
     }
     
+    /**
+     * This method is a overloading method for Server use only
+     * 
+     * @param pFacility = facility name to check
+     * @param pDays = list of days in String to check
+     * @return response Message
+     * @throws CloneNotSupportedException 
+     */
     public Message checkAvailability (String pFacility, List<String> pDays) throws CloneNotSupportedException {
         
         String info = "The facility " + pFacility + " is not available on: ";
@@ -287,6 +314,7 @@ public class BookingData {
         return avaibility;
     }
     
+    //Check availability of all facilities
     public Message checkAll () throws CloneNotSupportedException {
         String info = "The facilities " + " are not available on: ";
         
@@ -308,6 +336,7 @@ public class BookingData {
     }
     
     /**
+     * Register an new user who want to monitor a facility
      * 
      * @param pFacility = facility name to monitor
      * @param pIPAddr = observer IP address
@@ -328,6 +357,7 @@ public class BookingData {
             msg.setRequestSuccessful(sus);
         }
         else {
+            //the client is already registered
             msg.setRequestSuccessful(false);
             msg.addResponseMessage("client already exists");
         }
@@ -335,6 +365,12 @@ public class BookingData {
         return msg;
     }
     
+    /**
+     * Get all observers for a facility
+     * 
+     * @param pFacility = facility name
+     * @return ArrayList of all observers monitoring a facility
+     */
     public ArrayList<Observer> getObservers(String pFacility) {
         ArrayList<Observer> candidates =  this.aObservers.get(pFacility);
         ArrayList<Observer> observers = new ArrayList<Observer>();
@@ -351,6 +387,13 @@ public class BookingData {
         return observers;
     }
     
+    /**
+     * Get 
+     * 
+     * @param pFacility = facility name to check
+     * @return Message
+     * @throws CloneNotSupportedException 
+     */
     public Message getAvailability (String pFacility) throws CloneNotSupportedException {
         String info = "The facility " + pFacility + " is not available on: ";
         

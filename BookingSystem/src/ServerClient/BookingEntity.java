@@ -1,12 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ServerClient;
 
 /**
  *
  * @author rikardandersson, Lance
+ * 
+ * This class is used to store information for a specific booking, 
+ * including facility name, start date, end date and confirmation ID.
+ * Filed valid is only for use in BookingData.
+ * 
  */
 public class BookingEntity {
     private String aFacility;
@@ -23,6 +24,7 @@ public class BookingEntity {
         this.valid = valid;
     }
     
+    //Default constructor
     public BookingEntity() {
         super();
     }
@@ -35,6 +37,7 @@ public class BookingEntity {
         valid = true;
     }
     
+    //Setters and getters
     public void setFacility(String pFacility) {
         aFacility = pFacility;
     }
@@ -67,6 +70,12 @@ public class BookingEntity {
         return aConformationID;
     }
 
+    /**
+     * 
+     * @param pStartDate = start date to check overlapping
+     * @param pEndDate = end date to check overlapping
+     * @return Boolean
+     */
     public boolean isOverlapping(BookingDate pStartDate, BookingDate pEndDate) {
         if(aStartDate.isAfter(pEndDate) || aEndDate.isBefore(pStartDate)) {
             return false;
